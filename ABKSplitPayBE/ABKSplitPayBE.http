@@ -1,0 +1,6 @@
+@ABKSplitPayBE_HostAddress = http://localhost:5137
+
+GET {{ABKSplitPayBE_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
