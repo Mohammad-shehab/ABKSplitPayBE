@@ -4,6 +4,7 @@ using ABKSplitPayBE.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ABKSplitPayBE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250408063553_Application User picture")]
+    partial class ApplicationUserpicture
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -542,10 +545,10 @@ namespace ABKSplitPayBE.Migrations
                         new
                         {
                             ProductId = 5,
-                            Description = "MRI scan package.",
+                            Description = "Comprehensive health checkup package.",
                             IsActive = true,
                             Name = "MRI",
-                            PictureUrl = "https://www.capitalradiology.com.au/media/he1jvtno/mri-2000-x-1333-v2.png",
+                            PictureUrl = "https://images.unsplash.com/photo-1576091160397-5d14be92a6ad?q=80&w=2070&auto=format&fit=crop",
                             Price = 150.00m,
                             ProductCategoryId = 3,
                             StockQuantity = 0,

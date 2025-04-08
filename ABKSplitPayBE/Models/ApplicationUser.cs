@@ -14,7 +14,7 @@ namespace ABKSplitPayBE.Models
         public string PhoneNumber { get; set; }
 
         [Required, MaxLength(255)]
-        public string ProfilePictureUrl { get; set; } = "https://example.com/images/default-profile.jpg"; // Default value
+        public string ProfilePictureUrl { get; set; } = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"; // Default value
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

@@ -49,7 +49,7 @@ namespace ABKSplitPayBE.Controllers
             [Required]
             public string Password { get; set; }
             public string PhoneNumber { get; set; }
-            [Required]
+            
             public string ProfilePictureUrl { get; set; }
         }
 
