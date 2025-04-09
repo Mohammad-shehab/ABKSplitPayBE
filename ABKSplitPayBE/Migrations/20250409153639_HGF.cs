@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ABKSplitPayBE.Migrations
 {
     /// <inheritdoc />
-    public partial class fghj : Migration
+    public partial class HGF : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,7 +34,7 @@ namespace ABKSplitPayBE.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
-                    ProfilePictureUrl = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    ProfilePictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -523,10 +523,10 @@ namespace ABKSplitPayBE.Migrations
                 columns: new[] { "ProductCategoryId", "Description", "IsActive", "Name", "PictureUrl" },
                 values: new object[,]
                 {
-                    { 1, "Devices and gadgets such as smartphones, laptops, and TVs.", true, "Electronics", "https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=2070&auto=format&fit=crop" },
-                    { 2, "Payments for school fees, uniforms, and educational materials.", true, "School Bills", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop" },
-                    { 3, "Payments for medical bills, consultations, and treatments.", true, "Medical Expenses", "https://images.unsplash.com/photo-1576091160397-5d14be92a6ad?q=80&w=2070&auto=format&fit=crop" },
-                    { 4, "Furniture items like sofas, beds, and dining tables.", true, "Home Furniture", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop" }
+                    { 1, "Devices and gadgets such as smartphones, laptops, and TVs.", true, "Electronics", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGwOifpWIFylO-2Lkn8Zi5ECXt6PFr-ihOuw&s" },
+                    { 2, "Payments for school fees, uniforms, and educational materials.", true, "School Bills", "https://assets.visme.co/templates/banners/thumbnails/i_School-Tuition-Receipt_full.jpg" },
+                    { 3, "Payments for medical bills, consultations, and treatments.", true, "Medical Expenses", "https://www.aklerbrowning.com/wp-content/uploads/medical-expenses.jpg" },
+                    { 4, "Furniture items like sofas, beds, and dining tables.", true, "Home Furniture", "https://www.athome-furniture.com/web/image/159801-47a6cc44/OUTDOOghR-BANNER-ATHOME--copy-copy.jpg" }
                 });
 
             migrationBuilder.InsertData(
@@ -534,10 +534,10 @@ namespace ABKSplitPayBE.Migrations
                 columns: new[] { "StoreCategoryId", "Description", "IsActive", "Name", "PictureUrl" },
                 values: new object[,]
                 {
-                    { 1, "Stores specializing in electronic devices and gadgets.", true, "Electronics Stores", "https://images.unsplash.com/photo-1550005799-34c8c3d9c1b6?q=80&w=2070&auto=format&fit=crop" },
-                    { 2, "Stores offering a variety of home furniture.", true, "Furniture Stores", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop" },
-                    { 3, "Services related to education, including schools and bookstores.", true, "Educational Services", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop" },
-                    { 4, "Hospitals, clinics, and pharmacies offering medical services.", true, "Medical Services", "https://images.unsplash.com/photo-1576091160397-5d14be92a6ad?q=80&w=2070&auto=format&fit=crop" }
+                    { 1, "Stores specializing in electronic devices and gadgets.", true, "Electronics Stores", "https://i0.wp.com/zilani-int.com/wp-content/uploads/2023/02/8ebb2cb57bdb71ac4f0aaadfd61911d5.jpeg?w=680&ssl=1" },
+                    { 2, "Stores offering a variety of home furniture.", true, "Furniture Stores", "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/IKEA_Shopping_centre_Sweden.jpg/1200px-IKEA_Shopping_centre_Sweden.jpg" },
+                    { 3, "Services related to education, including schools and bookstores.", true, "Educational Services", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQiCK3dZsrWBzP6I0HBpEjA-1-AqZoEeF1drQ&s" },
+                    { 4, "Hospitals, clinics, and pharmacies offering medical services.", true, "Medical Services", "https://previews.123rf.com/images/shutterboythailand/shutterboythailand1604/shutterboythailand160400336/58429893-medical-service-word-on-tablet-screen-with-medical-equipment-on-background.jpg" }
                 });
 
             migrationBuilder.InsertData(
@@ -545,14 +545,14 @@ namespace ABKSplitPayBE.Migrations
                 columns: new[] { "StoreId", "Description", "IsActive", "LogoUrl", "Name", "StoreCategoryId", "WebsiteUrl" },
                 values: new object[,]
                 {
-                    { 1, "A leading retailer for electronics and books in the Middle East.", true, "https://www.jarir.com/static/jarir-logo.png", "Jarir Bookstore", 1, "https://www.jarir.com" },
-                    { 2, "Kuwait's largest electronics retailer.", true, "https://www.xcite.com/static/xcite-logo.png", "Xcite by Alghanim Electronics", 1, "https://www.xcite.com" },
-                    { 3, "Affordable furniture and home decor solutions.", true, "https://www.ikea.com/global/en/images/ikea-logo.svg", "IKEA Kuwait", 2, "https://www.ikea.com/kw" },
-                    { 4, "Stylish furniture and home accessories.", true, "https://www.theone.com/static/theone-logo.png", "The One", 2, "https://www.theone.com" },
-                    { 5, "A premier international school in Kuwait.", true, "https://www.ais-kuwait.org/static/ais-logo.png", "American International School", 3, "https://www.ais-kuwait.org" },
-                    { 6, "A bookstore offering educational materials and school supplies.", true, "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop", "Al-Ru’ya Bookstore", 3, "https://www.alruya.com" },
-                    { 7, "A leading hospital in Kuwait offering comprehensive medical services.", true, "https://www.daralshifa.com/static/daralshifa-logo.png", "Dar Al Shifa Hospital", 4, "https://www.daralshifa.com" },
-                    { 8, "A premium hospital specializing in various medical treatments.", true, "https://www.royalehayat.com/static/royalehayat-logo.png", "Royale Hayat Hospital", 4, "https://www.royalehayat.com" }
+                    { 1, "A leading retailer for electronics and books in the Middle East.", true, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_EYfEMiV59HZO1JVMunmUd-XHOpbVrWI8DQ&s", "Jarir Bookstore", 1, "https://www.jarir.com" },
+                    { 2, "Kuwait's largest electronics retailer.", true, "https://www.xcite.com/assets/icons/logo.jpg", "Xcite by Alghanim Electronics", 1, "https://www.xcite.com" },
+                    { 3, "Affordable furniture and home decor solutions.", true, "https://static.dezeen.com/uploads/2019/04/ikea-logo-new-hero-1.jpg", "IKEA Kuwait", 2, "https://www.ikea.com/kw" },
+                    { 4, "Stylish furniture and home accessories.", true, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBNTvYAyzRiucO7d_DLudPP-8B2qwdQOOH4Q&s", "Abyat", 2, "https://www.abyat.com/kw/ar" },
+                    { 5, "A premier international school in Kuwait.", true, "https://media.licdn.com/dms/image/v2/C561BAQE_m2Ujim4lyQ/company-background_10000/company-background_10000/0/1584559760344/american_international_school_kuwait_cover?e=2147483647&v=beta&t=zt2lRU5uJA-o2CHmJuVDqoWV8SIqa_W_F69eqQ3yRhs", "American International School", 3, "https://www.ais-kuwait.org" },
+                    { 6, "AUM Top university in Kuwait in QS & Times Higher Education Rankings", true, "https://www.aum.edu.kw/images/ShareLogo.jpg", "AUM", 3, "https://www.aum.edu.kw/" },
+                    { 7, "A leading hospital in Kuwait offering comprehensive medical services.", true, "https://purchase.daralshifa.com/images/logo.png", "Dar Al Shifa Hospital", 4, "https://www.daralshifa.com" },
+                    { 8, "A premium hospital specializing in various medical treatments.", true, "https://www.sharpersoftware.com/img/Customers/RHHLogo.jpg", "Royale Hayat Hospital", 4, "https://www.royalehayat.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -560,14 +560,14 @@ namespace ABKSplitPayBE.Migrations
                 columns: new[] { "ProductId", "Description", "IsActive", "Name", "PictureUrl", "Price", "ProductCategoryId", "StockQuantity", "StoreId" },
                 values: new object[,]
                 {
-                    { 1, "Latest Samsung smartphone with advanced features.", true, "Samsung Galaxy S23", "https://images.samsung.com/is/image/samsung/p6pim/ae/2302/gallery/ae-galaxy-s23-s918-sm-s918bzkhmeb-534862463?$650_519_PNG$", 250.00m, 1, 50, 1 },
+                    { 1, "Latest Samsung smartphone with advanced features.", true, "Samsung Galaxy S23", "https://images.shopkees.com/uploads/cdn/images/1000/9995354760_1675408536.webp", 250.00m, 1, 50, 1 },
                     { 2, "High-performance laptop for professionals.", true, "MacBook Pro", "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp-spacegray-select-202206?wid=904&hei=840&fmt=jpeg&qlt=90&.v=1664497359481", 1200.00m, 1, 30, 2 },
-                    { 3, "Annual tuition fee for American International School.", true, "AIS Tuition Fee", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop", 5000.00m, 2, 0, 5 },
-                    { 4, "Standard school uniform set.", true, "School Uniform", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop", 50.00m, 2, 100, 6 },
-                    { 5, "Comprehensive health checkup package.", true, "General Checkup", "https://images.unsplash.com/photo-1576091160397-5d14be92a6ad?q=80&w=2070&auto=format&fit=crop", 150.00m, 3, 0, 7 },
-                    { 6, "Professional dental cleaning service.", true, "Dental Cleaning", "https://images.unsplash.com/photo-1576091160397-5d14be92a6ad?q=80&w=2070&auto=format&fit=crop", 80.00m, 3, 0, 8 },
-                    { 7, "Modern 3-seater sofa set.", true, "Sofa Set", "https://www.ikea.com/kw/en/images/products/friheten-three-seat-sofa-bed-skiftebo-dark-grey__0245285_pe384403_s5.jpg", 400.00m, 4, 20, 3 },
-                    { 8, "Elegant 6-seater dining table.", true, "Dining Table", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop", 300.00m, 4, 15, 4 }
+                    { 3, "Annual tuition fee for American International School.", true, "AIS Tuition Fee", "https://www.ais-kuwait.org/admissions/tuition-fees/", 5000.00m, 2, 0, 5 },
+                    { 4, "Annual tuition fee for American University of the Middle East.", true, "AUM Tuition Fee", "https://www.aum.edu.kw/english/admission/undergraduate-admission/tuition-fees", 50.00m, 2, 100, 6 },
+                    { 5, "MRI scan package.", true, "MRI", "https://www.capitalradiology.com.au/media/he1jvtno/mri-2000-x-1333-v2.png", 150.00m, 3, 0, 7 },
+                    { 6, "Professional dental cleaning service.", true, "Dental Cleaning", "https://west85thdental.com/wp-content/uploads/2022/01/woman-getting-a-dental-cleaning.jpg", 80.00m, 3, 0, 8 },
+                    { 7, "Modern 3-seater sofa set.", true, "Sofa Set", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9bK65Pig7XvG_6MJ9RcEXWfVijHKjTDmPzg&s", 400.00m, 4, 20, 3 },
+                    { 8, "Elegant 6-seater dining table.", true, "Dining Table", "https://m.media-amazon.com/images/I/51Yt8mJTKzL.jpg", 300.00m, 4, 15, 4 }
                 });
 
             migrationBuilder.CreateIndex(

@@ -46,6 +46,7 @@ namespace ABKSplitPayBE.Data
                     FullName = "Admin User",
                     ProfilePictureUrl = "https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=2070&auto=format&fit=crop", // Real image
                     EmailConfirmed = true,
+                    PhoneNumber = "123-456-7890", // Set a valid phone number
                     CreatedAt = DateTime.UtcNow
                 };
 
@@ -74,6 +75,8 @@ namespace ABKSplitPayBE.Data
                     FullName = "Test User",
                     ProfilePictureUrl = "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=2070&auto=format&fit=crop", // Real image
                     EmailConfirmed = true,
+                    PhoneNumber = "987-654-3210", // Set a valid phone number
+
                     CreatedAt = DateTime.UtcNow
                 };
 
