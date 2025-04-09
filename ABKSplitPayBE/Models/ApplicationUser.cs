@@ -13,8 +13,7 @@ namespace ABKSplitPayBE.Models
         [MaxLength(15)]
         public string PhoneNumber { get; set; }
 
-        [Required, MaxLength(255)]
-        public string ProfilePictureUrl { get; set; } = "https://example.com/images/default-profile.jpg"; // Default value
+        public string ProfilePictureUrl { get; set; } = "https://rslqld.org/-/media/rslqld/stock-images/find-help/advocacy/dva-claims-icons/rsl-contact-methods_in-person-01.png?modified=20201013230428"; // Default value
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

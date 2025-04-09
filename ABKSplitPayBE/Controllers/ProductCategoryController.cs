@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,9 +22,26 @@ namespace ABKSplitPayBE.Controllers
             _context = context;
         }
 
-        // DTO for creating/updating product categories
+        // DTO for creating/updating product categories with validation
         public class ProductCategoryDto
         {
+            [Required(ErrorMessage = "Name is required.")]
+            [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters.")]
+            public string Name { get; set; }
+
+            [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters.")]
+            public string Description { get; set; }
+
+            [Url(ErrorMessage = "PictureUrl must be a valid URL.")]
+            public string PictureUrl { get; set; }
+
+            public bool IsActive { get; set; }
+        }
+
+        // DTO for API responses (GET methods)
+        public class ProductCategoryResponseDto
+        {
+            public int ProductCategoryId { get; set; }
             public string Name { get; set; }
             public string Description { get; set; }
             public string PictureUrl { get; set; }
@@ -32,24 +50,41 @@ namespace ABKSplitPayBE.Controllers
 
         // GET: api/ProductCategory
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductCategory>>> GetProductCategories()
+        public async Task<ActionResult<IEnumerable<ProductCategoryResponseDto>>> GetProductCategories()
         {
             var categories = await _context.ProductCategories
                 .Where(pc => pc.IsActive)
+                .Select(pc => new ProductCategoryResponseDto
+                {
+                    ProductCategoryId = pc.ProductCategoryId,
+                    Name = pc.Name,
+                    Description = pc.Description,
+                    PictureUrl = pc.PictureUrl,
+                    IsActive = pc.IsActive
+                })
                 .ToListAsync();
             return Ok(categories);
         }
 
         // GET: api/ProductCategory/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductCategory>> GetProductCategory(int id)
+        public async Task<ActionResult<ProductCategoryResponseDto>> GetProductCategory(int id)
         {
             var category = await _context.ProductCategories
-                .FirstOrDefaultAsync(pc => pc.ProductCategoryId == id && pc.IsActive);
+                .Where(pc => pc.ProductCategoryId == id && pc.IsActive)
+                .Select(pc => new ProductCategoryResponseDto
+                {
+                    ProductCategoryId = pc.ProductCategoryId,
+                    Name = pc.Name,
+                    Description = pc.Description,
+                    PictureUrl = pc.PictureUrl,
+                    IsActive = pc.IsActive
+                })
+                .FirstOrDefaultAsync();
 
             if (category == null)
             {
-                return NotFound("Product category not found.");
+                return NotFound($"Product category with ID {id} not found or is inactive.");
             }
 
             return Ok(category);
@@ -57,8 +92,8 @@ namespace ABKSplitPayBE.Controllers
 
         // POST: api/ProductCategory
         [HttpPost]
-        [Authorize(Roles = "Admin")] // Only admins can create categories
-        public async Task<ActionResult<ProductCategory>> CreateProductCategory(ProductCategoryDto categoryDto)
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ProductCategoryResponseDto>> CreateProductCategory(ProductCategoryDto categoryDto)
         {
             if (!ModelState.IsValid)
             {
@@ -76,18 +111,32 @@ namespace ABKSplitPayBE.Controllers
             _context.ProductCategories.Add(category);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetProductCategory), new { id = category.ProductCategoryId }, category);
+            var createdCategoryDto = new ProductCategoryResponseDto
+            {
+                ProductCategoryId = category.ProductCategoryId,
+                Name = category.Name,
+                Description = category.Description,
+                PictureUrl = category.PictureUrl,
+                IsActive = category.IsActive
+            };
+
+            return CreatedAtAction(nameof(GetProductCategory), new { id = category.ProductCategoryId }, createdCategoryDto);
         }
 
         // PUT: api/ProductCategory/{id}
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")] // Only admins can update categories
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateProductCategory(int id, ProductCategoryDto categoryDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var category = await _context.ProductCategories.FindAsync(id);
             if (category == null)
             {
-                return NotFound("Product category not found.");
+                return NotFound($"Product category with ID {id} not found.");
             }
 
             category.Name = categoryDto.Name ?? category.Name;
@@ -103,13 +152,18 @@ namespace ABKSplitPayBE.Controllers
 
         // DELETE: api/ProductCategory/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")] // Only admins can delete categories
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteProductCategory(int id)
         {
             var category = await _context.ProductCategories.FindAsync(id);
             if (category == null)
             {
-                return NotFound("Product category not found.");
+                return NotFound($"Product category with ID {id} not found.");
+            }
+
+            if (!category.IsActive)
+            {
+                return BadRequest("Product category is already inactive.");
             }
 
             category.IsActive = false; // Soft delete

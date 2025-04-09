@@ -49,7 +49,7 @@ namespace ABKSplitPayBE.Controllers
             [Required]
             public string Password { get; set; }
             public string PhoneNumber { get; set; }
-            [Required]
+
             public string ProfilePictureUrl { get; set; }
         }
 
@@ -179,7 +179,9 @@ namespace ABKSplitPayBE.Controllers
                 Email = registerDto.Email,
                 FullName = registerDto.FullName,
                 PhoneNumber = registerDto.PhoneNumber,
-                ProfilePictureUrl = registerDto.ProfilePictureUrl, // Now required in DTO
+                ProfilePictureUrl = string.IsNullOrEmpty(registerDto.ProfilePictureUrl)
+                    ? "https://rslqld.org/-/media/rslqld/stock-images/find-help/advocacy/dva-claims-icons/rsl-contact-methods_in-person-01.png?modified=20201013230428"
+                    : registerDto.ProfilePictureUrl,
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -189,7 +191,6 @@ namespace ABKSplitPayBE.Controllers
                 return BadRequest(result.Errors);
             }
 
-            // Assign the "User" role to the new user
             await _userManager.AddToRoleAsync(user, "User");
 
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);

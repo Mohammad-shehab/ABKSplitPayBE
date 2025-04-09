@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ABKSplitPayBE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250407090538_cghjkl")]
-    partial class cghjkl
+    [Migration("20250409153639_HGF")]
+    partial class HGF
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -136,8 +136,7 @@ namespace ABKSplitPayBE.Migrations
 
                     b.Property<string>("ProfilePictureUrl")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -500,7 +499,7 @@ namespace ABKSplitPayBE.Migrations
                             Description = "Latest Samsung smartphone with advanced features.",
                             IsActive = true,
                             Name = "Samsung Galaxy S23",
-                            PictureUrl = "https://images.samsung.com/is/image/samsung/p6pim/ae/2302/gallery/ae-galaxy-s23-s918-sm-s918bzkhmeb-534862463?$650_519_PNG$",
+                            PictureUrl = "https://images.shopkees.com/uploads/cdn/images/1000/9995354760_1675408536.webp",
                             Price = 250.00m,
                             ProductCategoryId = 1,
                             StockQuantity = 50,
@@ -524,7 +523,7 @@ namespace ABKSplitPayBE.Migrations
                             Description = "Annual tuition fee for American International School.",
                             IsActive = true,
                             Name = "AIS Tuition Fee",
-                            PictureUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop",
+                            PictureUrl = "https://www.ais-kuwait.org/admissions/tuition-fees/",
                             Price = 5000.00m,
                             ProductCategoryId = 2,
                             StockQuantity = 0,
@@ -533,10 +532,10 @@ namespace ABKSplitPayBE.Migrations
                         new
                         {
                             ProductId = 4,
-                            Description = "Standard school uniform set.",
+                            Description = "Annual tuition fee for American University of the Middle East.",
                             IsActive = true,
-                            Name = "School Uniform",
-                            PictureUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop",
+                            Name = "AUM Tuition Fee",
+                            PictureUrl = "https://www.aum.edu.kw/english/admission/undergraduate-admission/tuition-fees",
                             Price = 50.00m,
                             ProductCategoryId = 2,
                             StockQuantity = 100,
@@ -545,10 +544,10 @@ namespace ABKSplitPayBE.Migrations
                         new
                         {
                             ProductId = 5,
-                            Description = "Comprehensive health checkup package.",
+                            Description = "MRI scan package.",
                             IsActive = true,
-                            Name = "General Checkup",
-                            PictureUrl = "https://images.unsplash.com/photo-1576091160397-5d14be92a6ad?q=80&w=2070&auto=format&fit=crop",
+                            Name = "MRI",
+                            PictureUrl = "https://www.capitalradiology.com.au/media/he1jvtno/mri-2000-x-1333-v2.png",
                             Price = 150.00m,
                             ProductCategoryId = 3,
                             StockQuantity = 0,
@@ -560,7 +559,7 @@ namespace ABKSplitPayBE.Migrations
                             Description = "Professional dental cleaning service.",
                             IsActive = true,
                             Name = "Dental Cleaning",
-                            PictureUrl = "https://images.unsplash.com/photo-1576091160397-5d14be92a6ad?q=80&w=2070&auto=format&fit=crop",
+                            PictureUrl = "https://west85thdental.com/wp-content/uploads/2022/01/woman-getting-a-dental-cleaning.jpg",
                             Price = 80.00m,
                             ProductCategoryId = 3,
                             StockQuantity = 0,
@@ -572,7 +571,7 @@ namespace ABKSplitPayBE.Migrations
                             Description = "Modern 3-seater sofa set.",
                             IsActive = true,
                             Name = "Sofa Set",
-                            PictureUrl = "https://www.ikea.com/kw/en/images/products/friheten-three-seat-sofa-bed-skiftebo-dark-grey__0245285_pe384403_s5.jpg",
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9bK65Pig7XvG_6MJ9RcEXWfVijHKjTDmPzg&s",
                             Price = 400.00m,
                             ProductCategoryId = 4,
                             StockQuantity = 20,
@@ -584,7 +583,7 @@ namespace ABKSplitPayBE.Migrations
                             Description = "Elegant 6-seater dining table.",
                             IsActive = true,
                             Name = "Dining Table",
-                            PictureUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop",
+                            PictureUrl = "https://m.media-amazon.com/images/I/51Yt8mJTKzL.jpg",
                             Price = 300.00m,
                             ProductCategoryId = 4,
                             StockQuantity = 15,
@@ -632,7 +631,7 @@ namespace ABKSplitPayBE.Migrations
                             Description = "Devices and gadgets such as smartphones, laptops, and TVs.",
                             IsActive = true,
                             Name = "Electronics",
-                            PictureUrl = "https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=2070&auto=format&fit=crop"
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGwOifpWIFylO-2Lkn8Zi5ECXt6PFr-ihOuw&s"
                         },
                         new
                         {
@@ -640,7 +639,7 @@ namespace ABKSplitPayBE.Migrations
                             Description = "Payments for school fees, uniforms, and educational materials.",
                             IsActive = true,
                             Name = "School Bills",
-                            PictureUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop"
+                            PictureUrl = "https://assets.visme.co/templates/banners/thumbnails/i_School-Tuition-Receipt_full.jpg"
                         },
                         new
                         {
@@ -648,7 +647,7 @@ namespace ABKSplitPayBE.Migrations
                             Description = "Payments for medical bills, consultations, and treatments.",
                             IsActive = true,
                             Name = "Medical Expenses",
-                            PictureUrl = "https://images.unsplash.com/photo-1576091160397-5d14be92a6ad?q=80&w=2070&auto=format&fit=crop"
+                            PictureUrl = "https://www.aklerbrowning.com/wp-content/uploads/medical-expenses.jpg"
                         },
                         new
                         {
@@ -656,7 +655,7 @@ namespace ABKSplitPayBE.Migrations
                             Description = "Furniture items like sofas, beds, and dining tables.",
                             IsActive = true,
                             Name = "Home Furniture",
-                            PictureUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop"
+                            PictureUrl = "https://www.athome-furniture.com/web/image/159801-47a6cc44/OUTDOOghR-BANNER-ATHOME--copy-copy.jpg"
                         });
                 });
 
@@ -709,7 +708,7 @@ namespace ABKSplitPayBE.Migrations
                             StoreId = 1,
                             Description = "A leading retailer for electronics and books in the Middle East.",
                             IsActive = true,
-                            LogoUrl = "https://www.jarir.com/static/jarir-logo.png",
+                            LogoUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_EYfEMiV59HZO1JVMunmUd-XHOpbVrWI8DQ&s",
                             Name = "Jarir Bookstore",
                             StoreCategoryId = 1,
                             WebsiteUrl = "https://www.jarir.com"
@@ -719,7 +718,7 @@ namespace ABKSplitPayBE.Migrations
                             StoreId = 2,
                             Description = "Kuwait's largest electronics retailer.",
                             IsActive = true,
-                            LogoUrl = "https://www.xcite.com/static/xcite-logo.png",
+                            LogoUrl = "https://www.xcite.com/assets/icons/logo.jpg",
                             Name = "Xcite by Alghanim Electronics",
                             StoreCategoryId = 1,
                             WebsiteUrl = "https://www.xcite.com"
@@ -729,7 +728,7 @@ namespace ABKSplitPayBE.Migrations
                             StoreId = 3,
                             Description = "Affordable furniture and home decor solutions.",
                             IsActive = true,
-                            LogoUrl = "https://www.ikea.com/global/en/images/ikea-logo.svg",
+                            LogoUrl = "https://static.dezeen.com/uploads/2019/04/ikea-logo-new-hero-1.jpg",
                             Name = "IKEA Kuwait",
                             StoreCategoryId = 2,
                             WebsiteUrl = "https://www.ikea.com/kw"
@@ -739,17 +738,17 @@ namespace ABKSplitPayBE.Migrations
                             StoreId = 4,
                             Description = "Stylish furniture and home accessories.",
                             IsActive = true,
-                            LogoUrl = "https://www.theone.com/static/theone-logo.png",
-                            Name = "The One",
+                            LogoUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBNTvYAyzRiucO7d_DLudPP-8B2qwdQOOH4Q&s",
+                            Name = "Abyat",
                             StoreCategoryId = 2,
-                            WebsiteUrl = "https://www.theone.com"
+                            WebsiteUrl = "https://www.abyat.com/kw/ar"
                         },
                         new
                         {
                             StoreId = 5,
                             Description = "A premier international school in Kuwait.",
                             IsActive = true,
-                            LogoUrl = "https://www.ais-kuwait.org/static/ais-logo.png",
+                            LogoUrl = "https://media.licdn.com/dms/image/v2/C561BAQE_m2Ujim4lyQ/company-background_10000/company-background_10000/0/1584559760344/american_international_school_kuwait_cover?e=2147483647&v=beta&t=zt2lRU5uJA-o2CHmJuVDqoWV8SIqa_W_F69eqQ3yRhs",
                             Name = "American International School",
                             StoreCategoryId = 3,
                             WebsiteUrl = "https://www.ais-kuwait.org"
@@ -757,19 +756,19 @@ namespace ABKSplitPayBE.Migrations
                         new
                         {
                             StoreId = 6,
-                            Description = "A bookstore offering educational materials and school supplies.",
+                            Description = "AUM Top university in Kuwait in QS & Times Higher Education Rankings",
                             IsActive = true,
-                            LogoUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop",
-                            Name = "Al-Ru’ya Bookstore",
+                            LogoUrl = "https://www.aum.edu.kw/images/ShareLogo.jpg",
+                            Name = "AUM",
                             StoreCategoryId = 3,
-                            WebsiteUrl = "https://www.alruya.com"
+                            WebsiteUrl = "https://www.aum.edu.kw/"
                         },
                         new
                         {
                             StoreId = 7,
                             Description = "A leading hospital in Kuwait offering comprehensive medical services.",
                             IsActive = true,
-                            LogoUrl = "https://www.daralshifa.com/static/daralshifa-logo.png",
+                            LogoUrl = "https://purchase.daralshifa.com/images/logo.png",
                             Name = "Dar Al Shifa Hospital",
                             StoreCategoryId = 4,
                             WebsiteUrl = "https://www.daralshifa.com"
@@ -779,7 +778,7 @@ namespace ABKSplitPayBE.Migrations
                             StoreId = 8,
                             Description = "A premium hospital specializing in various medical treatments.",
                             IsActive = true,
-                            LogoUrl = "https://www.royalehayat.com/static/royalehayat-logo.png",
+                            LogoUrl = "https://www.sharpersoftware.com/img/Customers/RHHLogo.jpg",
                             Name = "Royale Hayat Hospital",
                             StoreCategoryId = 4,
                             WebsiteUrl = "https://www.royalehayat.com"
@@ -826,7 +825,7 @@ namespace ABKSplitPayBE.Migrations
                             Description = "Stores specializing in electronic devices and gadgets.",
                             IsActive = true,
                             Name = "Electronics Stores",
-                            PictureUrl = "https://images.unsplash.com/photo-1550005799-34c8c3d9c1b6?q=80&w=2070&auto=format&fit=crop"
+                            PictureUrl = "https://i0.wp.com/zilani-int.com/wp-content/uploads/2023/02/8ebb2cb57bdb71ac4f0aaadfd61911d5.jpeg?w=680&ssl=1"
                         },
                         new
                         {
@@ -834,7 +833,7 @@ namespace ABKSplitPayBE.Migrations
                             Description = "Stores offering a variety of home furniture.",
                             IsActive = true,
                             Name = "Furniture Stores",
-                            PictureUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop"
+                            PictureUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/IKEA_Shopping_centre_Sweden.jpg/1200px-IKEA_Shopping_centre_Sweden.jpg"
                         },
                         new
                         {
@@ -842,7 +841,7 @@ namespace ABKSplitPayBE.Migrations
                             Description = "Services related to education, including schools and bookstores.",
                             IsActive = true,
                             Name = "Educational Services",
-                            PictureUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop"
+                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQiCK3dZsrWBzP6I0HBpEjA-1-AqZoEeF1drQ&s"
                         },
                         new
                         {
@@ -850,7 +849,7 @@ namespace ABKSplitPayBE.Migrations
                             Description = "Hospitals, clinics, and pharmacies offering medical services.",
                             IsActive = true,
                             Name = "Medical Services",
-                            PictureUrl = "https://images.unsplash.com/photo-1576091160397-5d14be92a6ad?q=80&w=2070&auto=format&fit=crop"
+                            PictureUrl = "https://previews.123rf.com/images/shutterboythailand/shutterboythailand1604/shutterboythailand160400336/58429893-medical-service-word-on-tablet-screen-with-medical-equipment-on-background.jpg"
                         });
                 });
 
