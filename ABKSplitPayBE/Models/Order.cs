@@ -49,7 +49,7 @@ namespace ABKSplitPayBE.Models
         public Address ShippingAddress { get; set; }
 
         public ICollection<OrderItem> OrderItems { get; set; }
-        public ICollection<Installment> Installments { get; set; }
+        public ICollection<Installment>? Installments { get; set; }
     }
 }
 

@@ -33,7 +33,7 @@ namespace ABKSplitPayBE.Models
         public int PaymentMethodId { get; set; }
 
         [MaxLength(100)]
-        public string TransactionId { get; set; }
+        public string? TransactionId { get; set; }
 
         [Required, MaxLength(20)]
         public string PaymentStatus { get; set; }
@@ -45,6 +45,6 @@ namespace ABKSplitPayBE.Models
         [ForeignKey("PaymentMethodId")]
         public PaymentMethod PaymentMethod { get; set; }
 
-        public ICollection<Transaction> Transactions { get; set; }
+        public ICollection<Transaction>? Transactions { get; set; }
     }
 }

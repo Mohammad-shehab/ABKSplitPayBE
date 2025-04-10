@@ -134,8 +134,7 @@ namespace ABKSplitPayBE.Controllers
                     Amount = installmentAmount,
                     Currency = order.Currency,
                     IsPaid = false,
-                    PaymentStatus = "Pending"
-                    // PaymentMethodId will be set later when the user selects a payment method
+                    PaymentStatus = "Pending",
                 }).ToList();
 
             _context.Orders.Add(order);
@@ -146,6 +145,7 @@ namespace ABKSplitPayBE.Controllers
 
             return CreatedAtAction(nameof(GetOrder), new { id = order.OrderId }, order);
         }
+
 
         // PUT: api/Order/{id}
         [HttpPut("{id}")]
