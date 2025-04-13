@@ -228,62 +228,102 @@ namespace ABKSplitPayBE.Controllers
 
         // PUT: api/Installment/{id}
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateInstallment(int id, [FromBody] dynamic installmentDto)
+        [Authorize]
+        public async Task<IActionResult> UpdateInstallment(int id)
         {
-            var installment = await _context.Installments.FindAsync(id);
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var installment = await _context.Installments
+                .Include(i => i.Order)
+                .FirstOrDefaultAsync(i => i.InstallmentId == id);
+
             if (installment == null)
             {
                 return NotFound("Installment not found.");
             }
 
-            // Validate PaymentMethodId if provided
-            int paymentMethodId = installmentDto.PaymentMethodId;
-            if (paymentMethodId != 0)
+            // Ensure the user can only update installments for their own orders
+            if (installment.Order.UserId != userId)
             {
-                var paymentMethod = await _context.PaymentMethods.FindAsync(paymentMethodId);
-                if (paymentMethod == null)
-                {
-                    return BadRequest("Payment method not found.");
-                }
-                installment.PaymentMethodId = paymentMethodId;
+                return Forbid("You are not authorized to update this installment.");
             }
 
-            // Validate OrderId if provided
-            int orderId = installmentDto.OrderId;
-            if (orderId != 0)
+            if (installment.IsPaid)
             {
-                var order = await _context.Orders.FindAsync(orderId);
-                if (order == null)
-                {
-                    return BadRequest("Order not found.");
-                }
-                installment.OrderId = orderId;
+                return BadRequest("Installment is already paid.");
             }
 
-            installment.InstallmentNumber = installmentDto.InstallmentNumber != 0 ? (int)installmentDto.InstallmentNumber : installment.InstallmentNumber;
-            installment.DueDate = installmentDto.DueDate != null ? (DateTime)installmentDto.DueDate : installment.DueDate;
-            installment.Amount = installmentDto.Amount != 0 ? (decimal)installmentDto.Amount : installment.Amount;
-            installment.Currency = installmentDto.Currency ?? installment.Currency;
-            installment.IsPaid = installmentDto.IsPaid != null ? (bool)installmentDto.IsPaid : installment.IsPaid;
-            installment.PaidDate = installmentDto.PaidDate != null ? (DateTime?)installmentDto.PaidDate : installment.PaidDate;
-            installment.TransactionId = installmentDto.TransactionId ?? installment.TransactionId;
-            installment.PaymentStatus = installmentDto.PaymentStatus ?? installment.PaymentStatus;
+            // Mark the installment as paid
+            installment.IsPaid = true;
+            installment.PaidDate = DateTime.UtcNow;
+            installment.PaymentStatus = "Paid";
 
             _context.Entry(installment).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            // Check if all installments for the order are paid
+            var allInstallments = await _context.Installments
+                .Where(i => i.OrderId == installment.OrderId)
+                .ToListAsync();
+
+            if (allInstallments.All(i => i.IsPaid))
+            {
+                // Update the order status to "Paid"
+                installment.Order.Status = "Paid";
+                _context.Entry(installment.Order).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
+
+            // Fetch the updated installment for the response
+            var updatedInstallment = await _context.Installments
+                .Where(i => i.InstallmentId == id)
+                .Select(i => new
+                {
+                    i.InstallmentId,
+                    i.InstallmentNumber,
+                    i.DueDate,
+                    i.Amount,
+                    i.Currency,
+                    i.IsPaid,
+                    i.PaidDate,
+                    i.PaymentMethodId,
+                    i.TransactionId,
+                    i.PaymentStatus,
+                    Order = new
+                    {
+                        i.Order.OrderId,
+                        i.Order.UserId,
+                        i.Order.TotalAmount,
+                        i.Order.Currency,
+                        i.Order.Status,
+                        i.Order.OrderDate,
+                        i.Order.Notes,
+                        i.Order.ShippingMethod
+                    },
+                    PaymentMethod = i.PaymentMethod != null ? new
+                    {
+                        i.PaymentMethod.PaymentMethodId,
+                        i.PaymentMethod.UserId,
+                        i.PaymentMethod.LastFourDigits,
+                        i.PaymentMethod.CardType,
+                        i.PaymentMethod.ExpiryMonth,
+                        i.PaymentMethod.ExpiryYear,
+                        i.PaymentMethod.IsDefault,
+                        i.PaymentMethod.AddedAt
+                    } : null
+                })
+                .FirstOrDefaultAsync();
+
+            return Ok(updatedInstallment);
         }
 
         // PUT: api/Installment/order/{orderId}/pay
         [HttpPut("order/{orderId}/pay")]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<IActionResult> PayInstallments(int orderId)
         {
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             var order = await _context.Orders
-                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+                .FirstOrDefaultAsync(o => o.OrderId == orderId && o.UserId == userId);
 
             if (order == null)
             {
@@ -301,10 +341,20 @@ namespace ABKSplitPayBE.Controllers
 
             foreach (var installment in installments)
             {
-                installment.IsPaid = true;
-                installment.PaidDate = DateTime.UtcNow;
-                installment.PaymentStatus = "Paid";
-                _context.Entry(installment).State = EntityState.Modified;
+                if (!installment.IsPaid) // Only update unpaid installments
+                {
+                    installment.IsPaid = true;
+                    installment.PaidDate = DateTime.UtcNow;
+                    installment.PaymentStatus = "Paid";
+                    _context.Entry(installment).State = EntityState.Modified;
+                }
+            }
+
+            // Update the order status to "Paid" if all installments are paid
+            if (installments.All(i => i.IsPaid))
+            {
+                order.Status = "Paid";
+                _context.Entry(order).State = EntityState.Modified;
             }
 
             await _context.SaveChangesAsync();
