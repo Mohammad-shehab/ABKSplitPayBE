@@ -169,7 +169,7 @@ namespace ABKSplitPayBE.Data
                     Description = "Stylish furniture and home accessories.",
                     WebsiteUrl = "https://www.abyat.com/kw/ar",
                     StoreCategoryId = 2,
-                    LogoUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBNTvYAyzRiucO7d_DLudPP-8B2qwdQOOH4Q&s",
+                    LogoUrl = "https://d1yjjnpx0p53s8.cloudfront.net/styles/large/s3/abyat_wing_logo_0.jpg?itok=Trhx2GSu",
                     IsActive = true
                 },
                 // Educational Services
