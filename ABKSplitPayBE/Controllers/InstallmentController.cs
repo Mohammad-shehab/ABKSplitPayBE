@@ -19,24 +19,10 @@ namespace ABKSplitPayBE.Controllers
             _context = context;
         }
 
-        public class InstallmentDto
-        {
-            public int OrderId { get; set; }
-            public int InstallmentNumber { get; set; }
-            public DateTime DueDate { get; set; }
-            public decimal Amount { get; set; }
-            public string Currency { get; set; }
-            public bool IsPaid { get; set; }
-            public DateTime? PaidDate { get; set; }
-            public int PaymentMethodId { get; set; }
-            public string TransactionId { get; set; }
-            public string PaymentStatus { get; set; }
-        }
-
         // GET: api/Installment/order/{orderId}
         [HttpGet("order/{orderId}")]
         [Authorize]
-        public async Task<ActionResult<Installment>> GetInstallments(int orderId)
+        public async Task<IActionResult> GetInstallments(int orderId)
         {
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             var order = await _context.Orders
@@ -48,26 +34,96 @@ namespace ABKSplitPayBE.Controllers
             }
 
             var installments = await _context.Installments
-                .Include(i => i.Order)
-                .Include(i => i.PaymentMethod)
-                .Include(i => i.Transactions)
                 .Where(i => i.OrderId == orderId)
+                .Select(i => new
+                {
+                    i.InstallmentId,
+                    i.InstallmentNumber,
+                    i.DueDate,
+                    i.Amount,
+                    i.Currency,
+                    i.IsPaid,
+                    i.PaidDate,
+                    i.PaymentMethodId,
+                    i.TransactionId,
+                    i.PaymentStatus,
+                    PaymentMethod = i.PaymentMethod != null ? new
+                    {
+                        i.PaymentMethod.PaymentMethodId,
+                        i.PaymentMethod.UserId,
+                        i.PaymentMethod.LastFourDigits,
+                        i.PaymentMethod.CardType,
+                        i.PaymentMethod.ExpiryMonth,
+                        i.PaymentMethod.ExpiryYear,
+                        i.PaymentMethod.IsDefault,
+                        i.PaymentMethod.AddedAt
+                    } : null
+                })
                 .ToListAsync();
 
-            return Ok(installments);
+            var response = new
+            {
+                Order = new
+                {
+                    order.OrderId,
+                    order.UserId,
+                    order.TotalAmount,
+                    order.Currency,
+                    order.Status,
+                    order.OrderDate,
+                    order.Notes,
+                    order.ShippingMethod
+                },
+                Installments = installments
+            };
+
+            return Ok(response);
         }
 
         // GET: api/Installment/{id}
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<ActionResult<Installment>> GetInstallment(int id)
+        public async Task<IActionResult> GetInstallment(int id)
         {
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             var installment = await _context.Installments
-                .Include(i => i.Order)
-                .Include(i => i.PaymentMethod)
-                .Include(i => i.Transactions)
-                .FirstOrDefaultAsync(i => i.InstallmentId == id && i.Order.UserId == userId);
+                .Where(i => i.InstallmentId == id && i.Order.UserId == userId)
+                .Select(i => new
+                {
+                    i.InstallmentId,
+                    i.InstallmentNumber,
+                    i.DueDate,
+                    i.Amount,
+                    i.Currency,
+                    i.IsPaid,
+                    i.PaidDate,
+                    i.PaymentMethodId,
+                    i.TransactionId,
+                    i.PaymentStatus,
+                    Order = new
+                    {
+                        i.Order.OrderId,
+                        i.Order.UserId,
+                        i.Order.TotalAmount,
+                        i.Order.Currency,
+                        i.Order.Status,
+                        i.Order.OrderDate,
+                        i.Order.Notes,
+                        i.Order.ShippingMethod
+                    },
+                    PaymentMethod = i.PaymentMethod != null ? new
+                    {
+                        i.PaymentMethod.PaymentMethodId,
+                        i.PaymentMethod.UserId,
+                        i.PaymentMethod.LastFourDigits,
+                        i.PaymentMethod.CardType,
+                        i.PaymentMethod.ExpiryMonth,
+                        i.PaymentMethod.ExpiryYear,
+                        i.PaymentMethod.IsDefault,
+                        i.PaymentMethod.AddedAt
+                    } : null
+                })
+                .FirstOrDefaultAsync();
 
             if (installment == null)
             {
@@ -80,20 +136,31 @@ namespace ABKSplitPayBE.Controllers
         // POST: api/Installment
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Installment>> CreateInstallment(InstallmentDto installmentDto)
+        public async Task<IActionResult> CreateInstallment([FromBody] dynamic installmentDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var order = await _context.Orders.FindAsync(installmentDto.OrderId);
+            // Validate required fields
+            int orderId = installmentDto.OrderId;
+            int installmentNumber = installmentDto.InstallmentNumber;
+            decimal amount = installmentDto.Amount;
+            int paymentMethodId = installmentDto.PaymentMethodId;
+
+            if (orderId == 0 || installmentNumber == 0 || amount == 0 || paymentMethodId == 0)
+            {
+                return BadRequest("OrderId, InstallmentNumber, Amount, and PaymentMethodId are required.");
+            }
+
+            var order = await _context.Orders.FindAsync(orderId);
             if (order == null)
             {
                 return BadRequest("Order not found.");
             }
 
-            var paymentMethod = await _context.PaymentMethods.FindAsync(installmentDto.PaymentMethodId);
+            var paymentMethod = await _context.PaymentMethods.FindAsync(paymentMethodId);
             if (paymentMethod == null)
             {
                 return BadRequest("Payment method not found.");
@@ -101,14 +168,14 @@ namespace ABKSplitPayBE.Controllers
 
             var installment = new Installment
             {
-                OrderId = installmentDto.OrderId,
-                InstallmentNumber = installmentDto.InstallmentNumber,
+                OrderId = orderId,
+                InstallmentNumber = installmentNumber,
                 DueDate = installmentDto.DueDate,
-                Amount = installmentDto.Amount,
+                Amount = amount,
                 Currency = installmentDto.Currency,
-                IsPaid = installmentDto.IsPaid,
+                IsPaid = installmentDto.IsPaid ?? false,
                 PaidDate = installmentDto.PaidDate,
-                PaymentMethodId = installmentDto.PaymentMethodId,
+                PaymentMethodId = paymentMethodId,
                 TransactionId = installmentDto.TransactionId,
                 PaymentStatus = installmentDto.PaymentStatus
             };
@@ -116,13 +183,53 @@ namespace ABKSplitPayBE.Controllers
             _context.Installments.Add(installment);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetInstallment), new { id = installment.InstallmentId }, installment);
+            // Fetch the created installment for the response
+            var createdInstallment = await _context.Installments
+                .Where(i => i.InstallmentId == installment.InstallmentId)
+                .Select(i => new
+                {
+                    i.InstallmentId,
+                    i.InstallmentNumber,
+                    i.DueDate,
+                    i.Amount,
+                    i.Currency,
+                    i.IsPaid,
+                    i.PaidDate,
+                    i.PaymentMethodId,
+                    i.TransactionId,
+                    i.PaymentStatus,
+                    Order = new
+                    {
+                        i.Order.OrderId,
+                        i.Order.UserId,
+                        i.Order.TotalAmount,
+                        i.Order.Currency,
+                        i.Order.Status,
+                        i.Order.OrderDate,
+                        i.Order.Notes,
+                        i.Order.ShippingMethod
+                    },
+                    PaymentMethod = i.PaymentMethod != null ? new
+                    {
+                        i.PaymentMethod.PaymentMethodId,
+                        i.PaymentMethod.UserId,
+                        i.PaymentMethod.LastFourDigits,
+                        i.PaymentMethod.CardType,
+                        i.PaymentMethod.ExpiryMonth,
+                        i.PaymentMethod.ExpiryYear,
+                        i.PaymentMethod.IsDefault,
+                        i.PaymentMethod.AddedAt
+                    } : null
+                })
+                .FirstOrDefaultAsync();
+
+            return CreatedAtAction(nameof(GetInstallment), new { id = installment.InstallmentId }, createdInstallment);
         }
 
         // PUT: api/Installment/{id}
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateInstallment(int id, InstallmentDto installmentDto)
+        public async Task<IActionResult> UpdateInstallment(int id, [FromBody] dynamic installmentDto)
         {
             var installment = await _context.Installments.FindAsync(id);
             if (installment == null)
@@ -130,20 +237,36 @@ namespace ABKSplitPayBE.Controllers
                 return NotFound("Installment not found.");
             }
 
-            var paymentMethod = await _context.PaymentMethods.FindAsync(installmentDto.PaymentMethodId);
-            if (paymentMethod == null)
+            // Validate PaymentMethodId if provided
+            int paymentMethodId = installmentDto.PaymentMethodId;
+            if (paymentMethodId != 0)
             {
-                return BadRequest("Payment method not found.");
+                var paymentMethod = await _context.PaymentMethods.FindAsync(paymentMethodId);
+                if (paymentMethod == null)
+                {
+                    return BadRequest("Payment method not found.");
+                }
+                installment.PaymentMethodId = paymentMethodId;
             }
 
-            installment.OrderId = installmentDto.OrderId != 0 ? installmentDto.OrderId : installment.OrderId;
-            installment.InstallmentNumber = installmentDto.InstallmentNumber != 0 ? installmentDto.InstallmentNumber : installment.InstallmentNumber;
-            installment.DueDate = installmentDto.DueDate != default ? installmentDto.DueDate : installment.DueDate;
-            installment.Amount = installmentDto.Amount != 0 ? installmentDto.Amount : installment.Amount;
+            // Validate OrderId if provided
+            int orderId = installmentDto.OrderId;
+            if (orderId != 0)
+            {
+                var order = await _context.Orders.FindAsync(orderId);
+                if (order == null)
+                {
+                    return BadRequest("Order not found.");
+                }
+                installment.OrderId = orderId;
+            }
+
+            installment.InstallmentNumber = installmentDto.InstallmentNumber != 0 ? (int)installmentDto.InstallmentNumber : installment.InstallmentNumber;
+            installment.DueDate = installmentDto.DueDate != null ? (DateTime)installmentDto.DueDate : installment.DueDate;
+            installment.Amount = installmentDto.Amount != 0 ? (decimal)installmentDto.Amount : installment.Amount;
             installment.Currency = installmentDto.Currency ?? installment.Currency;
-            installment.IsPaid = installmentDto.IsPaid;
-            installment.PaidDate = installmentDto.PaidDate ?? installment.PaidDate;
-            installment.PaymentMethodId = installmentDto.PaymentMethodId != 0 ? installmentDto.PaymentMethodId : installment.PaymentMethodId;
+            installment.IsPaid = installmentDto.IsPaid != null ? (bool)installmentDto.IsPaid : installment.IsPaid;
+            installment.PaidDate = installmentDto.PaidDate != null ? (DateTime?)installmentDto.PaidDate : installment.PaidDate;
             installment.TransactionId = installmentDto.TransactionId ?? installment.TransactionId;
             installment.PaymentStatus = installmentDto.PaymentStatus ?? installment.PaymentStatus;
 
@@ -151,6 +274,87 @@ namespace ABKSplitPayBE.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        // PUT: api/Installment/order/{orderId}/pay
+        [HttpPut("order/{orderId}/pay")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> PayInstallments(int orderId)
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var order = await _context.Orders
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+            if (order == null)
+            {
+                return NotFound("Order not found.");
+            }
+
+            var installments = await _context.Installments
+                .Where(i => i.OrderId == orderId)
+                .ToListAsync();
+
+            if (!installments.Any())
+            {
+                return NotFound("No installments found for this order.");
+            }
+
+            foreach (var installment in installments)
+            {
+                installment.IsPaid = true;
+                installment.PaidDate = DateTime.UtcNow;
+                installment.PaymentStatus = "Paid";
+                _context.Entry(installment).State = EntityState.Modified;
+            }
+
+            await _context.SaveChangesAsync();
+
+            // Fetch the updated installments for the response
+            var updatedInstallments = await _context.Installments
+                .Where(i => i.OrderId == orderId)
+                .Select(i => new
+                {
+                    i.InstallmentId,
+                    i.InstallmentNumber,
+                    i.DueDate,
+                    i.Amount,
+                    i.Currency,
+                    i.IsPaid,
+                    i.PaidDate,
+                    i.PaymentMethodId,
+                    i.TransactionId,
+                    i.PaymentStatus,
+                    PaymentMethod = i.PaymentMethod != null ? new
+                    {
+                        i.PaymentMethod.PaymentMethodId,
+                        i.PaymentMethod.UserId,
+                        i.PaymentMethod.LastFourDigits,
+                        i.PaymentMethod.CardType,
+                        i.PaymentMethod.ExpiryMonth,
+                        i.PaymentMethod.ExpiryYear,
+                        i.PaymentMethod.IsDefault,
+                        i.PaymentMethod.AddedAt
+                    } : null
+                })
+                .ToListAsync();
+
+            var response = new
+            {
+                Order = new
+                {
+                    order.OrderId,
+                    order.UserId,
+                    order.TotalAmount,
+                    order.Currency,
+                    order.Status,
+                    order.OrderDate,
+                    order.Notes,
+                    order.ShippingMethod
+                },
+                Installments = updatedInstallments
+            };
+
+            return Ok(response);
         }
 
         // DELETE: api/Installment/{id}

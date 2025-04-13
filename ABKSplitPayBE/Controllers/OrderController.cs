@@ -67,7 +67,6 @@ namespace ABKSplitPayBE.Controllers
             return Ok(order);
         }
 
-        // POST: api/Order
         [HttpPost]
         [Authorize]
         public async Task<ActionResult<Order>> CreateOrder(OrderDto orderDto)
@@ -124,6 +123,13 @@ namespace ABKSplitPayBE.Controllers
                 UnitPrice = ci.Product.Price
             }).ToList();
 
+            // Get a valid PaymentMethodId (you can replace this with your logic to get the actual PaymentMethodId)
+            var paymentMethod = await _context.PaymentMethods.FirstOrDefaultAsync(pm => pm.UserId == userId);
+            if (paymentMethod == null)
+            {
+                return BadRequest("No valid payment method found for the user.");
+            }
+
             // Create Installments
             decimal installmentAmount = totalAmount / paymentPlan.NumberOfInstallments;
             order.Installments = Enumerable.Range(1, paymentPlan.NumberOfInstallments)
@@ -134,8 +140,9 @@ namespace ABKSplitPayBE.Controllers
                     Amount = installmentAmount,
                     Currency = order.Currency,
                     IsPaid = false,
-                    PaymentStatus = "Pending"
-                    // PaymentMethodId will be set later when the user selects a payment method
+                    PaymentStatus = "Pending",
+                    PaymentMethodId = paymentMethod.PaymentMethodId, // Set a valid PaymentMethodId
+                    TransactionId = Guid.NewGuid().ToString() // Provide a valid value
                 }).ToList();
 
             _context.Orders.Add(order);
@@ -146,6 +153,8 @@ namespace ABKSplitPayBE.Controllers
 
             return CreatedAtAction(nameof(GetOrder), new { id = order.OrderId }, order);
         }
+
+
 
         // PUT: api/Order/{id}
         [HttpPut("{id}")]

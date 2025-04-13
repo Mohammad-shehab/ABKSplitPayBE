@@ -90,6 +90,8 @@ namespace ABKSplitPayBE.Data
                 }
             );
 
+        
+
             // Seed StoreCategories
             modelBuilder.Entity<StoreCategory>().HasData(
                 new StoreCategory
