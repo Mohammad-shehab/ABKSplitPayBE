@@ -37,6 +37,7 @@ namespace ABKSplitPayBE.Controllers
             _configuration = configuration;
         }
 
+         
         // DTO for user registration
         public class RegisterUserDto
         {
@@ -200,21 +201,16 @@ namespace ABKSplitPayBE.Controllers
         }
 
         // PUT: api/ApplicationUser/{id}
-        [HttpPut("{id}")]
-        [Authorize] // Users can update their own profile; admins can update any user
-        public async Task<IActionResult> UpdateUser(string id, UpdateUserDto updateDto)
+        [HttpPut("update")]
+        [Authorize] // Users can update their own profile
+        public async Task<IActionResult> UpdateUser(UpdateUserDto updateDto)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByIdAsync(userId);
+
             if (user == null)
             {
                 return NotFound("User not found.");
-            }
-
-            // Ensure the user can only update their own profile unless they're an admin
-            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (currentUserId != id && !User.IsInRole("Admin"))
-            {
-                return Forbid();
             }
 
             user.FullName = updateDto.FullName ?? user.FullName;
