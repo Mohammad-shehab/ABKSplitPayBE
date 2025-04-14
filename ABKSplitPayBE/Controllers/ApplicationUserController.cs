@@ -143,22 +143,25 @@ namespace ABKSplitPayBE.Controllers
             return Ok(users);
         }
 
+        // GET: api/ApplicationUser/
+        [HttpGet("me")]
+        public IActionResult GetProfile()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            if (user == null) return NotFound();
+            return Ok(user);
+        }
+
         // GET: api/ApplicationUser/{id}
         [HttpGet("{id}")]
-        [Authorize] // Users can view their own profile; admins can view any user
+        [Authorize(Roles = "Admin")] // Only admins can view user details
         public async Task<ActionResult<ApplicationUser>> GetUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
                 return NotFound("User not found.");
-            }
-
-            // Ensure the user can only view their own profile unless they're an admin
-            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (currentUserId != id && !User.IsInRole("Admin"))
-            {
-                return Forbid();
             }
 
             return Ok(user);
