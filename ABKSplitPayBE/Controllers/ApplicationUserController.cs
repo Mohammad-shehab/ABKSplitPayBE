@@ -37,6 +37,7 @@ namespace ABKSplitPayBE.Controllers
             _configuration = configuration;
         }
 
+          
         // DTO for user registration
         public class RegisterUserDto
         {
