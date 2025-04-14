@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ABKSplitPayBE.Migrations
 {
     /// <inheritdoc />
-    public partial class HGF : Migration
+    public partial class fghj : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

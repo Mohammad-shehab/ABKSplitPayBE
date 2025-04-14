@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ABKSplitPayBE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250409153639_HGF")]
-    partial class HGF
+    [Migration("20250410061212_fghj")]
+    partial class fghj
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

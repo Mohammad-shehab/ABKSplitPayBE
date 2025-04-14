@@ -4,6 +4,7 @@ using ABKSplitPayBE.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ABKSplitPayBE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250413081647_commit")]
+    partial class commit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -735,7 +738,7 @@ namespace ABKSplitPayBE.Migrations
                             StoreId = 4,
                             Description = "Stylish furniture and home accessories.",
                             IsActive = true,
-                            LogoUrl = "https://d1yjjnpx0p53s8.cloudfront.net/styles/large/s3/abyat_wing_logo_0.jpg?itok=Trhx2GSu",
+                            LogoUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBNTvYAyzRiucO7d_DLudPP-8B2qwdQOOH4Q&s",
                             Name = "Abyat",
                             StoreCategoryId = 2,
                             WebsiteUrl = "https://www.abyat.com/kw/ar"
