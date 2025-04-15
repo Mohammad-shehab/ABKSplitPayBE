@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ABKSplitPayBE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250410061212_fghj")]
-    partial class fghj
+    [Migration("20250415055415_gfhjk")]
+    partial class gfhjk
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -397,8 +397,7 @@ namespace ABKSplitPayBE.Migrations
 
                     b.Property<string>("LastFourDigits")
                         .IsRequired()
-                        .HasMaxLength(4)
-                        .HasColumnType("nvarchar(4)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Token")
                         .IsRequired()
@@ -523,7 +522,7 @@ namespace ABKSplitPayBE.Migrations
                             Description = "Annual tuition fee for American International School.",
                             IsActive = true,
                             Name = "AIS Tuition Fee",
-                            PictureUrl = "https://www.ais-kuwait.org/admissions/tuition-fees/",
+                            PictureUrl = "https://media.licdn.com/dms/image/v2/C561BAQE_m2Ujim4lyQ/company-background_10000/company-background_10000/0/1584559760344/american_international_school_kuwait_cover?e=2147483647&v=beta&t=zt2lRU5uJA-o2CHmJuVDqoWV8SIqa_W_F69eqQ3yRhs",
                             Price = 5000.00m,
                             ProductCategoryId = 2,
                             StockQuantity = 0,
@@ -535,7 +534,7 @@ namespace ABKSplitPayBE.Migrations
                             Description = "Annual tuition fee for American University of the Middle East.",
                             IsActive = true,
                             Name = "AUM Tuition Fee",
-                            PictureUrl = "https://www.aum.edu.kw/english/admission/undergraduate-admission/tuition-fees",
+                            PictureUrl = "https://www.aum.edu.kw/images/ShareLogo.jpg",
                             Price = 50.00m,
                             ProductCategoryId = 2,
                             StockQuantity = 100,
@@ -738,7 +737,7 @@ namespace ABKSplitPayBE.Migrations
                             StoreId = 4,
                             Description = "Stylish furniture and home accessories.",
                             IsActive = true,
-                            LogoUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBNTvYAyzRiucO7d_DLudPP-8B2qwdQOOH4Q&s",
+                            LogoUrl = "https://d1yjjnpx0p53s8.cloudfront.net/styles/large/s3/abyat_wing_logo_0.jpg?itok=Trhx2GSu",
                             Name = "Abyat",
                             StoreCategoryId = 2,
                             WebsiteUrl = "https://www.abyat.com/kw/ar"
