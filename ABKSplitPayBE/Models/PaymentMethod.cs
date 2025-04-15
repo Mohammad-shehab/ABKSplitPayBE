@@ -16,7 +16,7 @@ namespace ABKSplitPayBE.Models
         [Required, MaxLength(255)]
         public string Token { get; set; }
 
-        [Required, StringLength(4, MinimumLength = 4)]
+        [Required]
         public string LastFourDigits { get; set; }
 
         [Required, MaxLength(20)]

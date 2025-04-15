@@ -394,8 +394,7 @@ namespace ABKSplitPayBE.Migrations
 
                     b.Property<string>("LastFourDigits")
                         .IsRequired()
-                        .HasMaxLength(4)
-                        .HasColumnType("nvarchar(4)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Token")
                         .IsRequired()

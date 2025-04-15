@@ -19,26 +19,27 @@ namespace ABKSplitPayBE.Controllers
             _context = context;
         }
 
-        public class AddressDto
-        {
-            public string FullName { get; set; }
-            public string AddressLine1 { get; set; }
-            public string AddressLine2 { get; set; }
-            public string City { get; set; }
-            public string State { get; set; }
-            public string PostalCode { get; set; }
-            public string Country { get; set; }
-            public bool IsDefault { get; set; }
-        }
-
         // GET: api/Address
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<Address>> GetAddresses()
+        public async Task<IActionResult> GetAddresses()
         {
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             var addresses = await _context.Addresses
                 .Where(a => a.UserId == userId)
+                .Select(a => new
+                {
+                    addressId = a.AddressId,
+                    userId = a.UserId,
+                    fullName = a.FullName,
+                    addressLine1 = a.AddressLine1,
+                    addressLine2 = a.AddressLine2,
+                    city = a.City,
+                    state = a.State,
+                    postalCode = a.PostalCode,
+                    country = a.Country,
+                    isDefault = a.IsDefault
+                })
                 .ToListAsync();
 
             return Ok(addresses);
@@ -47,11 +48,25 @@ namespace ABKSplitPayBE.Controllers
         // GET: api/Address/{id}
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<ActionResult<Address>> GetAddress(int id)
+        public async Task<IActionResult> GetAddress(int id)
         {
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             var address = await _context.Addresses
-                .FirstOrDefaultAsync(a => a.AddressId == id && a.UserId == userId);
+                .Where(a => a.AddressId == id && a.UserId == userId)
+                .Select(a => new
+                {
+                    addressId = a.AddressId,
+                    userId = a.UserId,
+                    fullName = a.FullName,
+                    addressLine1 = a.AddressLine1,
+                    addressLine2 = a.AddressLine2,
+                    city = a.City,
+                    state = a.State,
+                    postalCode = a.PostalCode,
+                    country = a.Country,
+                    isDefault = a.IsDefault
+                })
+                .FirstOrDefaultAsync();
 
             if (address == null)
             {
@@ -172,6 +187,18 @@ namespace ABKSplitPayBE.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        public class AddressDto
+        {
+            public string FullName { get; set; }
+            public string AddressLine1 { get; set; }
+            public string AddressLine2 { get; set; }
+            public string City { get; set; }
+            public string State { get; set; }
+            public string PostalCode { get; set; }
+            public string Country { get; set; }
+            public bool IsDefault { get; set; }
         }
     }
 }
