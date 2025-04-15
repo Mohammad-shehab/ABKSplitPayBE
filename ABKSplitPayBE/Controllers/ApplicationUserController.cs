@@ -168,6 +168,7 @@ namespace ABKSplitPayBE.Controllers
             return Ok(user);
         }
 
+       
         // POST: api/ApplicationUser/register
         [HttpPost("register")]
         public async Task<ActionResult> Register(RegisterUserDto registerDto)
@@ -197,8 +198,45 @@ namespace ABKSplitPayBE.Controllers
 
             await _userManager.AddToRoleAsync(user, "User");
 
-            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+            // Automatically create a cart for the user
+            var cart = new Cart
+            {
+                UserId = user.Id,
+                CreatedAt = DateTime.UtcNow
+            };
+            _context.Carts.Add(cart);
+            await _context.SaveChangesAsync();
+
+            // Generate JWT token
+            var roles = await _userManager.GetRolesAsync(user);
+            var authClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            foreach (var role in roles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                expires: DateTime.Now.AddHours(3),
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+            );
+
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                expiration = token.ValidTo
+            });
         }
+
 
         // PUT: api/ApplicationUser/{id}
         [HttpPut("update")]
