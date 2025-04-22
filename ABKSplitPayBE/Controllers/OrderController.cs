@@ -32,15 +32,25 @@ namespace ABKSplitPayBE.Controllers
         // GET: api/Order
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<Cart>> GetOrders()
+        public async Task<IActionResult> GetOrders()
         {
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             var orders = await _context.Orders
-                .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
-                .Include(o => o.ShippingAddress)
-                .Include(o => o.Installments)
                 .Where(o => o.UserId == userId)
+                .Select(o => new
+                {
+                    orderId = o.OrderId,
+                    userId = o.UserId,
+                    paymentPlanId = o.PaymentPlanId,
+                    shippingAddressId = o.ShippingAddressId,
+                    totalAmount = o.TotalAmount,
+                    currency = o.Currency,
+                    status = o.Status,
+                    orderDate = o.OrderDate,
+                    notes = o.Notes,
+                    shippingMethod = o.ShippingMethod,
+                    productNames = o.OrderItems.Select(oi => oi.Product.Name).ToList()
+                })
                 .ToListAsync();
 
             return Ok(orders);
@@ -49,15 +59,26 @@ namespace ABKSplitPayBE.Controllers
         // GET: api/Order/{id}
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<ActionResult<Order>> GetOrder(int id)
+        public async Task<IActionResult> GetOrder(int id)
         {
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             var order = await _context.Orders
-                .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
-                .Include(o => o.ShippingAddress)
-                .Include(o => o.Installments)
-                .FirstOrDefaultAsync(o => o.OrderId == id && o.UserId == userId);
+                .Where(o => o.OrderId == id && o.UserId == userId)
+                .Select(o => new
+                {
+                    orderId = o.OrderId,
+                    userId = o.UserId,
+                    paymentPlanId = o.PaymentPlanId,
+                    shippingAddressId = o.ShippingAddressId,
+                    totalAmount = o.TotalAmount,
+                    currency = o.Currency,
+                    status = o.Status,
+                    orderDate = o.OrderDate,
+                    notes = o.Notes,
+                    shippingMethod = o.ShippingMethod,
+                    productNames = o.OrderItems.Select(oi => oi.Product.Name).ToList()
+                })
+                .FirstOrDefaultAsync();
 
             if (order == null)
             {
@@ -67,6 +88,20 @@ namespace ABKSplitPayBE.Controllers
             return Ok(order);
         }
 
+        // GET: api/Order/points
+        [HttpGet("points")]
+        [Authorize]
+        public async Task<IActionResult> GetPoints()
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var paidOrdersTotal = await _context.Orders
+                .Where(o => o.UserId == userId && o.Status == "Paid")
+                .SumAsync(o => o.TotalAmount);
+
+            return Ok(new { points = paidOrdersTotal });
+        }
+
+        // POST: api/Order
         [HttpPost]
         [Authorize]
         public async Task<ActionResult<Order>> CreateOrder(OrderDto orderDto)
@@ -153,8 +188,6 @@ namespace ABKSplitPayBE.Controllers
 
             return CreatedAtAction(nameof(GetOrder), new { id = order.OrderId }, order);
         }
-
-
 
         // PUT: api/Order/{id}
         [HttpPut("{id}")]
