@@ -13,12 +13,10 @@ namespace ABKSplitPayBE.Controllers
     public class PaymentMethodController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-
         public PaymentMethodController(ApplicationDbContext context)
         {
             _context = context;
         }
-
         public class PaymentMethodDto
         {
             public string Token { get; set; }
@@ -28,8 +26,6 @@ namespace ABKSplitPayBE.Controllers
             public int ExpiryYear { get; set; }
             public bool IsDefault { get; set; }
         }
-
-        // GET: api/PaymentMethod
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<PaymentMethod>> GetPaymentMethods()
@@ -41,8 +37,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(paymentMethods);
         }
-
-        // GET: api/PaymentMethod/{id}
         [HttpGet("{id}")]
         [Authorize]
         public async Task<ActionResult<PaymentMethod>> GetPaymentMethod(int id)
@@ -58,8 +52,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(paymentMethod);
         }
-
-        // POST: api/PaymentMethod
         [HttpPost]
         [Authorize]
         public async Task<ActionResult<PaymentMethod>> CreatePaymentMethod(PaymentMethodDto paymentMethodDto)
@@ -71,7 +63,6 @@ namespace ABKSplitPayBE.Controllers
 
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-            // If this is set as default, unset any existing default
             if (paymentMethodDto.IsDefault)
             {
                 var existingDefault = await _context.PaymentMethods
@@ -82,7 +73,6 @@ namespace ABKSplitPayBE.Controllers
                     pm.IsDefault = false;
                 }
             }
-
             var paymentMethod = new PaymentMethod
             {
                 UserId = userId,
@@ -94,14 +84,11 @@ namespace ABKSplitPayBE.Controllers
                 IsDefault = paymentMethodDto.IsDefault,
                 AddedAt = DateTime.UtcNow
             };
-
             _context.PaymentMethods.Add(paymentMethod);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetPaymentMethod), new { id = paymentMethod.PaymentMethodId }, paymentMethod);
         }
-
-        // PUT: api/PaymentMethod/{id}
         [HttpPut("{id}")]
         [Authorize]
         public async Task<IActionResult> UpdatePaymentMethod(int id, PaymentMethodDto paymentMethodDto)
@@ -125,7 +112,6 @@ namespace ABKSplitPayBE.Controllers
                     pm.IsDefault = false;
                 }
             }
-
             paymentMethod.Token = paymentMethodDto.Token ?? paymentMethod.Token;
             paymentMethod.LastFourDigits = paymentMethodDto.LastFourDigits ?? paymentMethod.LastFourDigits;
             paymentMethod.CardType = paymentMethodDto.CardType ?? paymentMethod.CardType;
@@ -138,8 +124,6 @@ namespace ABKSplitPayBE.Controllers
 
             return NoContent();
         }
-
-        // DELETE: api/PaymentMethod/{id}
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeletePaymentMethod(int id)
@@ -152,8 +136,6 @@ namespace ABKSplitPayBE.Controllers
             {
                 return NotFound("Payment method not found.");
             }
-
-            // Check if the payment method is used by any installments
             var installmentsUsingMethod = await _context.Installments
                 .Where(i => i.PaymentMethodId == id)
                 .ToListAsync();
@@ -162,10 +144,8 @@ namespace ABKSplitPayBE.Controllers
             {
                 return BadRequest("Cannot delete payment method because it is associated with existing installments.");
             }
-
             _context.PaymentMethods.Remove(paymentMethod);
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
     }

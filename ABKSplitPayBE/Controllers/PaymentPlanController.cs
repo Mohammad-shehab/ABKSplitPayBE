@@ -15,12 +15,10 @@ namespace ABKSplitPayBE.Controllers
     public class PaymentPlanController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-
         public PaymentPlanController(ApplicationDbContext context)
         {
             _context = context;
         }
-
         public class PaymentPlanDto
         {
             public string Name { get; set; }
@@ -29,8 +27,6 @@ namespace ABKSplitPayBE.Controllers
             public decimal InterestRate { get; set; }
             public bool IsActive { get; set; }
         }
-
-        // GET: api/PaymentPlan
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PaymentPlan>>> GetPaymentPlans()
         {
@@ -39,8 +35,6 @@ namespace ABKSplitPayBE.Controllers
                 .ToListAsync();
             return Ok(paymentPlans);
         }
-
-        // GET: api/PaymentPlan/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<PaymentPlan>> GetPaymentPlan(int id)
         {
@@ -54,8 +48,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(paymentPlan);
         }
-
-        // POST: api/PaymentPlan
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<PaymentPlan>> CreatePaymentPlan(PaymentPlanDto paymentPlanDto)
@@ -79,8 +71,6 @@ namespace ABKSplitPayBE.Controllers
 
             return CreatedAtAction(nameof(GetPaymentPlan), new { id = paymentPlan.PaymentPlanId }, paymentPlan);
         }
-
-        // PUT: api/PaymentPlan/{id}
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdatePaymentPlan(int id, PaymentPlanDto paymentPlanDto)
@@ -102,8 +92,6 @@ namespace ABKSplitPayBE.Controllers
 
             return NoContent();
         }
-
-        // DELETE: api/PaymentPlan/{id}
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeletePaymentPlan(int id)
@@ -113,10 +101,8 @@ namespace ABKSplitPayBE.Controllers
             {
                 return NotFound("Payment plan not found.");
             }
-
-            paymentPlan.IsActive = false; // Soft delete
+            paymentPlan.IsActive = false; 
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
     }

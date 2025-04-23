@@ -20,14 +20,10 @@ namespace ABKSplitPayBE.Data
         public DbSet<Installment> Installments { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<WishList> Wishlists { get; set; }
-
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            // Unique constraints
             modelBuilder.Entity<ApplicationUser>()
                 .HasIndex(u => u.UserName)
                 .IsUnique();
@@ -46,15 +42,11 @@ namespace ABKSplitPayBE.Data
             modelBuilder.Entity<Cart>()
                 .HasIndex(c => c.UserId)
                 .IsUnique();
-
-            // Configure the Installment -> PaymentMethod relationship to avoid cascading delete cycles
             modelBuilder.Entity<Installment>()
                 .HasOne(i => i.PaymentMethod)
                 .WithMany(pm => pm.Installments)
                 .HasForeignKey(i => i.PaymentMethodId)
-                .OnDelete(DeleteBehavior.NoAction); // Change to NO ACTION to avoid cascade path conflict
-
-            // Seed ProductCategories
+                .OnDelete(DeleteBehavior.NoAction); 
             modelBuilder.Entity<ProductCategory>().HasData(
                 new ProductCategory
                 {
@@ -89,9 +81,6 @@ namespace ABKSplitPayBE.Data
                     IsActive = true
                 }
             );
-
-        
-
             // Seed StoreCategories
             modelBuilder.Entity<StoreCategory>().HasData(
                 new StoreCategory
@@ -127,7 +116,6 @@ namespace ABKSplitPayBE.Data
                     IsActive = true
                 }
             );
-
             // Seed Stores
             modelBuilder.Entity<Store>().HasData(
                 // Electronics Stores
@@ -190,7 +178,7 @@ namespace ABKSplitPayBE.Data
                     Description = "AUM Top university in Kuwait in QS & Times Higher Education Rankings",
                     WebsiteUrl = "https://www.aum.edu.kw/",
                     StoreCategoryId = 3,
-                    LogoUrl = "https://www.aum.edu.kw/images/ShareLogo.jpg", // Placeholder
+                    LogoUrl = "https://www.aum.edu.kw/images/ShareLogo.jpg", 
                     IsActive = true
                 },
                 // Medical Services
@@ -215,7 +203,6 @@ namespace ABKSplitPayBE.Data
                     IsActive = true
                 }
             );
-
             // Seed Products
             modelBuilder.Entity<Product>().HasData(
                 // Electronics
@@ -227,7 +214,7 @@ namespace ABKSplitPayBE.Data
                     Price = 250.00m,
                     StockQuantity = 50,
                     ProductCategoryId = 1,
-                    StoreId = 1, // Jarir Bookstore
+                    StoreId = 1, 
                     PictureUrl = "https://images.shopkees.com/uploads/cdn/images/1000/9995354760_1675408536.webp",
                     IsActive = true
                 },
@@ -239,7 +226,7 @@ namespace ABKSplitPayBE.Data
                     Price = 1200.00m,
                     StockQuantity = 30,
                     ProductCategoryId = 1,
-                    StoreId = 2, // Xcite
+                    StoreId = 2, 
                     PictureUrl = "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp-spacegray-select-202206?wid=904&hei=840&fmt=jpeg&qlt=90&.v=1664497359481",
                     IsActive = true
                 },
@@ -250,9 +237,9 @@ namespace ABKSplitPayBE.Data
                     Name = "AIS Tuition Fee",
                     Description = "Annual tuition fee for American International School.",
                     Price = 5000.00m,
-                    StockQuantity = 0, // Unlimited for bills
+                    StockQuantity = 0, 
                     ProductCategoryId = 2,
-                    StoreId = 5, // American International School
+                    StoreId = 5, 
                     PictureUrl = "https://media.licdn.com/dms/image/v2/C561BAQE_m2Ujim4lyQ/company-background_10000/company-background_10000/0/1584559760344/american_international_school_kuwait_cover?e=2147483647&v=beta&t=zt2lRU5uJA-o2CHmJuVDqoWV8SIqa_W_F69eqQ3yRhs",
                     IsActive = true
                 },
@@ -264,7 +251,7 @@ namespace ABKSplitPayBE.Data
                     Price = 50.00m,
                     StockQuantity = 100,
                     ProductCategoryId = 2,
-                    StoreId = 6, // AUM
+                    StoreId = 6, 
                     PictureUrl = "https://www.aum.edu.kw/images/ShareLogo.jpg",
                     IsActive = true
                 },
@@ -275,9 +262,9 @@ namespace ABKSplitPayBE.Data
                     Name = "MRI",
                     Description = "MRI scan package.",
                     Price = 150.00m,
-                    StockQuantity = 0, // Unlimited for services
+                    StockQuantity = 0, 
                     ProductCategoryId = 3,
-                    StoreId = 7, // Dar Al Shifa Hospital
+                    StoreId = 7, 
                     PictureUrl = "https://www.capitalradiology.com.au/media/he1jvtno/mri-2000-x-1333-v2.png",
                     IsActive = true
                 },
@@ -287,9 +274,9 @@ namespace ABKSplitPayBE.Data
                     Name = "Dental Cleaning",
                     Description = "Professional dental cleaning service.",
                     Price = 80.00m,
-                    StockQuantity = 0, // Unlimited for services
+                    StockQuantity = 0, 
                     ProductCategoryId = 3,
-                    StoreId = 8, // Royale Hayat Hospital
+                    StoreId = 8, 
                     PictureUrl = "https://west85thdental.com/wp-content/uploads/2022/01/woman-getting-a-dental-cleaning.jpg",
                     IsActive = true
                 },
@@ -302,7 +289,7 @@ namespace ABKSplitPayBE.Data
                     Price = 400.00m,
                     StockQuantity = 20,
                     ProductCategoryId = 4,
-                    StoreId = 3, // IKEA Kuwait
+                    StoreId = 3, 
                     PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9bK65Pig7XvG_6MJ9RcEXWfVijHKjTDmPzg&s",
                     IsActive = true
                 },
@@ -314,7 +301,7 @@ namespace ABKSplitPayBE.Data
                     Price = 300.00m,
                     StockQuantity = 15,
                     ProductCategoryId = 4,
-                    StoreId = 4, // The One
+                    StoreId = 4, 
                     PictureUrl = "https://m.media-amazon.com/images/I/51Yt8mJTKzL.jpg",
                     IsActive = true
                 }

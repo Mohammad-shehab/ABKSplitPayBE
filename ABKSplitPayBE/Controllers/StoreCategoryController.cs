@@ -15,13 +15,10 @@ namespace ABKSplitPayBE.Controllers
     public class StoreCategoryController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-
         public StoreCategoryController(ApplicationDbContext context)
         {
             _context = context;
         }
-
-        // DTO for creating/updating store categories
         public class StoreCategoryDto
         {
             public string Name { get; set; }
@@ -29,8 +26,6 @@ namespace ABKSplitPayBE.Controllers
             public string PictureUrl { get; set; }
             public bool IsActive { get; set; }
         }
-
-        // GET: api/StoreCategory
         [HttpGet]
         public async Task<ActionResult<IEnumerable<StoreCategory>>> GetStoreCategories()
         {
@@ -39,8 +34,6 @@ namespace ABKSplitPayBE.Controllers
                 .ToListAsync();
             return Ok(categories);
         }
-
-        // GET: api/StoreCategory/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<StoreCategory>> GetStoreCategory(int id)
         {
@@ -54,17 +47,14 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(category);
         }
-
-        // POST: api/StoreCategory
         [HttpPost]
-        [Authorize(Roles = "Admin")] // Only admins can create categories
+        [Authorize(Roles = "Admin")] 
         public async Task<ActionResult<StoreCategory>> CreateStoreCategory(StoreCategoryDto categoryDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
             var category = new StoreCategory
             {
                 Name = categoryDto.Name,
@@ -78,10 +68,8 @@ namespace ABKSplitPayBE.Controllers
 
             return CreatedAtAction(nameof(GetStoreCategory), new { id = category.StoreCategoryId }, category);
         }
-
-        // PUT: api/StoreCategory/{id}
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")] // Only admins can update categories
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateStoreCategory(int id, StoreCategoryDto categoryDto)
         {
             var category = await _context.StoreCategories.FindAsync(id);
@@ -89,7 +77,6 @@ namespace ABKSplitPayBE.Controllers
             {
                 return NotFound("Store category not found.");
             }
-
             category.Name = categoryDto.Name ?? category.Name;
             category.Description = categoryDto.Description ?? category.Description;
             category.PictureUrl = categoryDto.PictureUrl ?? category.PictureUrl;
@@ -97,13 +84,10 @@ namespace ABKSplitPayBE.Controllers
 
             _context.Entry(category).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
-
-        // DELETE: api/StoreCategory/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")] // Only admins can delete categories
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteStoreCategory(int id)
         {
             var category = await _context.StoreCategories.FindAsync(id);
@@ -111,10 +95,8 @@ namespace ABKSplitPayBE.Controllers
             {
                 return NotFound("Store category not found.");
             }
-
-            category.IsActive = false; // Soft delete
+            category.IsActive = false; 
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
     }

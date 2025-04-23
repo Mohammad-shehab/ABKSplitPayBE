@@ -19,14 +19,11 @@ namespace ABKSplitPayBE.Controllers
         {
             _context = context;
         }
-
         public class CartItemDto
         {
             public int ProductId { get; set; }
             public int Quantity { get; set; }
         }
-
-        // GET: api/CartItem
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<CartItem>> GetCartItems()
@@ -44,8 +41,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(cart.CartItems);
         }
-
-        // GET: api/CartItem/{id}
         [HttpGet("{id}")]
         [Authorize]
         public async Task<ActionResult<CartItem>> GetCartItem(int id)
@@ -62,8 +57,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(cartItem);
         }
-
-        // POST: api/CartItem
         [HttpPost]
         [Authorize]
         public async Task<ActionResult<CartItem>> CreateCartItem(CartItemDto cartItemDto)
@@ -85,7 +78,6 @@ namespace ABKSplitPayBE.Controllers
             {
                 return BadRequest("Quantity must be greater than 0.");
             }
-
             var cartItem = new CartItem
             {
                 CartId = cart.CartId,
@@ -93,15 +85,12 @@ namespace ABKSplitPayBE.Controllers
                 Quantity = cartItemDto.Quantity,
                 AddedAt = DateTime.UtcNow
             };
-
             _context.CartItems.Add(cartItem);
             cart.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetCartItem), new { id = cartItem.CartItemId }, cartItem);
         }
-
-        // PUT: api/CartItem/{id}
         [HttpPut("{id}")]
         [Authorize]
         public async Task<IActionResult> UpdateCartItem(int id, CartItemDto cartItemDto)
@@ -136,8 +125,6 @@ namespace ABKSplitPayBE.Controllers
 
             return NoContent();
         }
-
-        // DELETE: api/CartItem/{id}
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteCartItem(int id)

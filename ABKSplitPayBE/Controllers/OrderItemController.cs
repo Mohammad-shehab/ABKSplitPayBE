@@ -13,13 +13,10 @@ namespace ABKSplitPayBE.Controllers
     public class OrderItemController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-
         public OrderItemController(ApplicationDbContext context)
         {
             _context = context;
         }
-
-        // GET: api/OrderItem/order/{orderId}
         [HttpGet("order/{orderId}")]
         [Authorize]
         public async Task<ActionResult<CartItem>> GetOrderItems(int orderId)
@@ -40,8 +37,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(orderItems);
         }
-
-        // GET: api/OrderItem/{id}
         [HttpGet("{id}")]
         [Authorize]
         public async Task<ActionResult<OrderItem>> GetOrderItem(int id)
@@ -59,7 +54,5 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(orderItem);
         }
-
-        // Note: POST, PUT, DELETE for OrderItem are not typically needed as they are managed via Order creation
     }
 }

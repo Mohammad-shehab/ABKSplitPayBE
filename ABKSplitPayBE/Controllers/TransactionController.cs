@@ -13,12 +13,10 @@ namespace ABKSplitPayBE.Controllers
     public class TransactionController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-
         public TransactionController(ApplicationDbContext context)
         {
             _context = context;
         }
-
         public class TransactionDto
         {
             public int InstallmentId { get; set; }
@@ -26,8 +24,6 @@ namespace ABKSplitPayBE.Controllers
             public DateTime PayDate { get; set; }
             public string Status { get; set; }
         }
-
-        // GET: api/Transaction/installment/{installmentId}
         [HttpGet("installment/{installmentId}")]
         [Authorize]
         public async Task<ActionResult<Transaction>> GetTransactions(int installmentId)
@@ -48,8 +44,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(transactions);
         }
-
-        // GET: api/Transaction/{id}
         [HttpGet("{id}")]
         [Authorize]
         public async Task<ActionResult<Transaction>> GetTransaction(int id)
@@ -59,7 +53,6 @@ namespace ABKSplitPayBE.Controllers
                 .Include(t => t.Installment)
                 .ThenInclude(i => i.Order)
                 .FirstOrDefaultAsync(t => t.TransactionId == id && t.Installment.Order.UserId == userId);
-
             if (transaction == null)
             {
                 return NotFound("Transaction not found.");
@@ -67,8 +60,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(transaction);
         }
-
-        // POST: api/Transaction
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Transaction>> CreateTransaction(TransactionDto transactionDto)
@@ -77,13 +68,11 @@ namespace ABKSplitPayBE.Controllers
             {
                 return BadRequest(ModelState);
             }
-
             var installment = await _context.Installments.FindAsync(transactionDto.InstallmentId);
             if (installment == null)
             {
                 return BadRequest("Installment not found.");
             }
-
             var transaction = new Transaction
             {
                 InstallmentId = transactionDto.InstallmentId,
@@ -91,14 +80,11 @@ namespace ABKSplitPayBE.Controllers
                 PayDate = transactionDto.PayDate,
                 Status = transactionDto.Status
             };
-
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetTransaction), new { id = transaction.TransactionId }, transaction);
         }
-
-        // PUT: api/Transaction/{id}
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateTransaction(int id, TransactionDto transactionDto)
@@ -108,25 +94,19 @@ namespace ABKSplitPayBE.Controllers
             {
                 return NotFound("Transaction not found.");
             }
-
             var installment = await _context.Installments.FindAsync(transactionDto.InstallmentId);
             if (installment == null)
             {
                 return BadRequest("Installment not found.");
             }
-
             transaction.InstallmentId = transactionDto.InstallmentId != 0 ? transactionDto.InstallmentId : transaction.InstallmentId;
             transaction.TransactionReference = transactionDto.TransactionReference ?? transaction.TransactionReference;
             transaction.PayDate = transactionDto.PayDate != default ? transactionDto.PayDate : transaction.PayDate;
             transaction.Status = transactionDto.Status ?? transaction.Status;
-
             _context.Entry(transaction).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
-
-        // DELETE: api/Transaction/{id}
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteTransaction(int id)
@@ -136,10 +116,8 @@ namespace ABKSplitPayBE.Controllers
             {
                 return NotFound("Transaction not found.");
             }
-
             _context.Transactions.Remove(transaction);
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
     }

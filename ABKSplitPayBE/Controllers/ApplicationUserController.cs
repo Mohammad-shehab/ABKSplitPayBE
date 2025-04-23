@@ -36,9 +36,6 @@ namespace ABKSplitPayBE.Controllers
             _context = context;
             _configuration = configuration;
         }
-
-         
-        // DTO for user registration
         public class RegisterUserDto
         {
             [Required]
@@ -53,8 +50,6 @@ namespace ABKSplitPayBE.Controllers
 
             public string ProfilePictureUrl { get; set; }
         }
-
-        // DTO for user login
         public class LoginDto
         {
             [Required]
@@ -62,16 +57,12 @@ namespace ABKSplitPayBE.Controllers
             [Required]
             public string Password { get; set; }
         }
-
-        // DTO for user update
         public class UpdateUserDto
         {
             public string FullName { get; set; }
             public string PhoneNumber { get; set; }
             public string ProfilePictureUrl { get; set; }
         }
-
-        // DTO for changing password
         public class ChangePasswordDto
         {
             [Required]
@@ -79,15 +70,11 @@ namespace ABKSplitPayBE.Controllers
             [Required]
             public string NewPassword { get; set; }
         }
-
-        // DTO for assigning/removing roles
         public class RoleDto
         {
             [Required]
             public string RoleName { get; set; }
         }
-
-        // POST: api/ApplicationUser/login
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
@@ -101,19 +88,13 @@ namespace ABKSplitPayBE.Controllers
             {
                 return Unauthorized("Invalid username or password.");
             }
-
-            // Get the user's roles
             var roles = await _userManager.GetRolesAsync(user);
-
-            // Create claims including the user's roles
             var authClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
-
-            // Add each role as a claim
             foreach (var role in roles)
             {
                 authClaims.Add(new Claim(ClaimTypes.Role, role));
@@ -127,24 +108,19 @@ namespace ABKSplitPayBE.Controllers
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
             );
-
             return Ok(new
             {
                 token = new JwtSecurityTokenHandler().WriteToken(token),
                 expiration = token.ValidTo
             });
         }
-
-        // GET: api/ApplicationUser
         [HttpGet]
-        [Authorize(Roles = "Admin")] // Only admins can view all users
+        [Authorize(Roles = "Admin")] 
         public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetUsers()
         {
             var users = await _context.Users.ToListAsync();
             return Ok(users);
         }
-
-        // GET: api/ApplicationUser/
         [HttpGet("me")]
         public IActionResult GetProfile()
         {
@@ -153,10 +129,8 @@ namespace ABKSplitPayBE.Controllers
             if (user == null) return NotFound();
             return Ok(user);
         }
-
-        // GET: api/ApplicationUser/{id}
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")] // Only admins can view user details
+        [Authorize(Roles = "Admin")] 
         public async Task<ActionResult<ApplicationUser>> GetUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -167,9 +141,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(user);
         }
-
-       
-        // POST: api/ApplicationUser/register
         [HttpPost("register")]
         public async Task<ActionResult> Register(RegisterUserDto registerDto)
         {
@@ -197,8 +168,6 @@ namespace ABKSplitPayBE.Controllers
             }
 
             await _userManager.AddToRoleAsync(user, "User");
-
-            // Automatically create a cart for the user
             var cart = new Cart
             {
                 UserId = user.Id,
@@ -206,8 +175,6 @@ namespace ABKSplitPayBE.Controllers
             };
             _context.Carts.Add(cart);
             await _context.SaveChangesAsync();
-
-            // Generate JWT token
             var roles = await _userManager.GetRolesAsync(user);
             var authClaims = new List<Claim>
             {
@@ -236,11 +203,8 @@ namespace ABKSplitPayBE.Controllers
                 expiration = token.ValidTo
             });
         }
-
-
-        // PUT: api/ApplicationUser/{id}
         [HttpPut("update")]
-        [Authorize] // Users can update their own profile
+        [Authorize] 
         public async Task<IActionResult> UpdateUser(UpdateUserDto updateDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -253,7 +217,7 @@ namespace ABKSplitPayBE.Controllers
 
             user.FullName = updateDto.FullName ?? user.FullName;
             user.PhoneNumber = updateDto.PhoneNumber ?? user.PhoneNumber;
-            user.ProfilePictureUrl = updateDto.ProfilePictureUrl ?? user.ProfilePictureUrl; // Will not be null due to model default
+            user.ProfilePictureUrl = updateDto.ProfilePictureUrl ?? user.ProfilePictureUrl; 
             user.UpdatedAt = DateTime.UtcNow;
 
             var result = await _userManager.UpdateAsync(user);
@@ -264,10 +228,8 @@ namespace ABKSplitPayBE.Controllers
 
             return NoContent();
         }
-
-        // DELETE: api/ApplicationUser/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")] // Only admins can delete users
+        [Authorize(Roles = "Admin")] 
         public async Task<IActionResult> DeleteUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -275,8 +237,6 @@ namespace ABKSplitPayBE.Controllers
             {
                 return NotFound("User not found.");
             }
-
-            // Check if the user has any associated data that needs to be handled
             var orders = await _context.Orders.AnyAsync(o => o.UserId == id);
             var paymentMethods = await _context.PaymentMethods.AnyAsync(pm => pm.UserId == id);
             if (orders || paymentMethods)
@@ -292,8 +252,6 @@ namespace ABKSplitPayBE.Controllers
 
             return NoContent();
         }
-
-        // POST: api/ApplicationUser/change-password
         [HttpPost("change-password")]
         [Authorize]
         public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
@@ -313,18 +271,12 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok("Password changed successfully.");
         }
-
-        // POST: api/ApplicationUser/logout
         [HttpPost("logout")]
         [Authorize]
         public IActionResult Logout()
         {
-            // JWT tokens are stateless, so logout typically involves client-side token deletion
-            // In a production environment, you might implement token blacklisting
             return Ok("Logged out successfully. Please remove the token on the client side.");
         }
-
-        // POST: api/ApplicationUser/{id}/assign-role
         [HttpPost("{id}/assign-role")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AssignRole(string id, RoleDto roleDto)
@@ -348,8 +300,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok($"Role '{roleDto.RoleName}' assigned to user '{user.UserName}'.");
         }
-
-        // POST: api/ApplicationUser/{id}/remove-role
         [HttpPost("{id}/remove-role")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RemoveRole(string id, RoleDto roleDto)

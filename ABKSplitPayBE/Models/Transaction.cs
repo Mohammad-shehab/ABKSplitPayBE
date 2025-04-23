@@ -5,23 +5,16 @@ namespace ABKSplitPayBE.Models
 {
     public class Transaction
     {
-
         [Key]
         public int TransactionId { get; set; }
-
         [Required]
         public int InstallmentId { get; set; }
-
         [Required, MaxLength(100)]
-        public string TransactionReference { get; set; } // Transaction ID from the payment processor
-
+        public string TransactionReference { get; set; } 
         [Required]
-        public DateTime PayDate { get; set; } // Date of the payment attempt
-
+        public DateTime PayDate { get; set; } 
         [Required, MaxLength(20)]
-        public string Status { get; set; } // e.g., "Success", "Failed"
-
-        // Relationships
+        public string Status { get; set; } 
         [ForeignKey("InstallmentId")]
         public Installment Installment { get; set; }
     }
