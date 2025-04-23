@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ABKSplitPayBE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250415112045_dfghjk")]
-    partial class dfghjk
+    [Migration("20250423100317_final ")]
+    partial class final
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -443,6 +443,116 @@ namespace ABKSplitPayBE.Migrations
                     b.HasKey("PaymentPlanId");
 
                     b.ToTable("PaymentPlans");
+
+                    b.HasData(
+                        new
+                        {
+                            PaymentPlanId = 1,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "1 Month Plan",
+                            NumberOfInstallments = 1
+                        },
+                        new
+                        {
+                            PaymentPlanId = 2,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "2 Month Plan",
+                            NumberOfInstallments = 2
+                        },
+                        new
+                        {
+                            PaymentPlanId = 3,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "3 Month Plan",
+                            NumberOfInstallments = 3
+                        },
+                        new
+                        {
+                            PaymentPlanId = 4,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "4 Month Plan",
+                            NumberOfInstallments = 4
+                        },
+                        new
+                        {
+                            PaymentPlanId = 5,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "5 Month Plan",
+                            NumberOfInstallments = 5
+                        },
+                        new
+                        {
+                            PaymentPlanId = 6,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "6 Month Plan",
+                            NumberOfInstallments = 6
+                        },
+                        new
+                        {
+                            PaymentPlanId = 7,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "7 Month Plan",
+                            NumberOfInstallments = 7
+                        },
+                        new
+                        {
+                            PaymentPlanId = 8,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "8 Month Plan",
+                            NumberOfInstallments = 8
+                        },
+                        new
+                        {
+                            PaymentPlanId = 9,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "9 Month Plan",
+                            NumberOfInstallments = 9
+                        },
+                        new
+                        {
+                            PaymentPlanId = 10,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "10 Month Plan",
+                            NumberOfInstallments = 10
+                        },
+                        new
+                        {
+                            PaymentPlanId = 11,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "11 Month Plan",
+                            NumberOfInstallments = 11
+                        },
+                        new
+                        {
+                            PaymentPlanId = 12,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "12 Month Plan",
+                            NumberOfInstallments = 12
+                        });
                 });
 
             modelBuilder.Entity("ABKSplitPayBE.Models.Product", b =>
@@ -490,104 +600,6 @@ namespace ABKSplitPayBE.Migrations
                     b.HasIndex("StoreId");
 
                     b.ToTable("Products");
-
-                    b.HasData(
-                        new
-                        {
-                            ProductId = 1,
-                            Description = "Latest Samsung smartphone with advanced features.",
-                            IsActive = true,
-                            Name = "Samsung Galaxy S23",
-                            PictureUrl = "https://images.shopkees.com/uploads/cdn/images/1000/9995354760_1675408536.webp",
-                            Price = 250.00m,
-                            ProductCategoryId = 1,
-                            StockQuantity = 50,
-                            StoreId = 1
-                        },
-                        new
-                        {
-                            ProductId = 2,
-                            Description = "High-performance laptop for professionals.",
-                            IsActive = true,
-                            Name = "MacBook Pro",
-                            PictureUrl = "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp-spacegray-select-202206?wid=904&hei=840&fmt=jpeg&qlt=90&.v=1664497359481",
-                            Price = 1200.00m,
-                            ProductCategoryId = 1,
-                            StockQuantity = 30,
-                            StoreId = 2
-                        },
-                        new
-                        {
-                            ProductId = 3,
-                            Description = "Annual tuition fee for American International School.",
-                            IsActive = true,
-                            Name = "AIS Tuition Fee",
-                            PictureUrl = "https://media.licdn.com/dms/image/v2/C561BAQE_m2Ujim4lyQ/company-background_10000/company-background_10000/0/1584559760344/american_international_school_kuwait_cover?e=2147483647&v=beta&t=zt2lRU5uJA-o2CHmJuVDqoWV8SIqa_W_F69eqQ3yRhs",
-                            Price = 5000.00m,
-                            ProductCategoryId = 2,
-                            StockQuantity = 0,
-                            StoreId = 5
-                        },
-                        new
-                        {
-                            ProductId = 4,
-                            Description = "Annual tuition fee for American University of the Middle East.",
-                            IsActive = true,
-                            Name = "AUM Tuition Fee",
-                            PictureUrl = "https://www.aum.edu.kw/images/ShareLogo.jpg",
-                            Price = 50.00m,
-                            ProductCategoryId = 2,
-                            StockQuantity = 100,
-                            StoreId = 6
-                        },
-                        new
-                        {
-                            ProductId = 5,
-                            Description = "MRI scan package.",
-                            IsActive = true,
-                            Name = "MRI",
-                            PictureUrl = "https://www.capitalradiology.com.au/media/he1jvtno/mri-2000-x-1333-v2.png",
-                            Price = 150.00m,
-                            ProductCategoryId = 3,
-                            StockQuantity = 0,
-                            StoreId = 7
-                        },
-                        new
-                        {
-                            ProductId = 6,
-                            Description = "Professional dental cleaning service.",
-                            IsActive = true,
-                            Name = "Dental Cleaning",
-                            PictureUrl = "https://west85thdental.com/wp-content/uploads/2022/01/woman-getting-a-dental-cleaning.jpg",
-                            Price = 80.00m,
-                            ProductCategoryId = 3,
-                            StockQuantity = 0,
-                            StoreId = 8
-                        },
-                        new
-                        {
-                            ProductId = 7,
-                            Description = "Modern 3-seater sofa set.",
-                            IsActive = true,
-                            Name = "Sofa Set",
-                            PictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9bK65Pig7XvG_6MJ9RcEXWfVijHKjTDmPzg&s",
-                            Price = 400.00m,
-                            ProductCategoryId = 4,
-                            StockQuantity = 20,
-                            StoreId = 3
-                        },
-                        new
-                        {
-                            ProductId = 8,
-                            Description = "Elegant 6-seater dining table.",
-                            IsActive = true,
-                            Name = "Dining Table",
-                            PictureUrl = "https://m.media-amazon.com/images/I/51Yt8mJTKzL.jpg",
-                            Price = 300.00m,
-                            ProductCategoryId = 4,
-                            StockQuantity = 15,
-                            StoreId = 4
-                        });
                 });
 
             modelBuilder.Entity("ABKSplitPayBE.Models.ProductCategory", b =>
@@ -741,46 +753,6 @@ namespace ABKSplitPayBE.Migrations
                             Name = "Abyat",
                             StoreCategoryId = 2,
                             WebsiteUrl = "https://www.abyat.com/kw/ar"
-                        },
-                        new
-                        {
-                            StoreId = 5,
-                            Description = "A premier international school in Kuwait.",
-                            IsActive = true,
-                            LogoUrl = "https://media.licdn.com/dms/image/v2/C561BAQE_m2Ujim4lyQ/company-background_10000/company-background_10000/0/1584559760344/american_international_school_kuwait_cover?e=2147483647&v=beta&t=zt2lRU5uJA-o2CHmJuVDqoWV8SIqa_W_F69eqQ3yRhs",
-                            Name = "American International School",
-                            StoreCategoryId = 3,
-                            WebsiteUrl = "https://www.ais-kuwait.org"
-                        },
-                        new
-                        {
-                            StoreId = 6,
-                            Description = "AUM Top university in Kuwait in QS & Times Higher Education Rankings",
-                            IsActive = true,
-                            LogoUrl = "https://www.aum.edu.kw/images/ShareLogo.jpg",
-                            Name = "AUM",
-                            StoreCategoryId = 3,
-                            WebsiteUrl = "https://www.aum.edu.kw/"
-                        },
-                        new
-                        {
-                            StoreId = 7,
-                            Description = "A leading hospital in Kuwait offering comprehensive medical services.",
-                            IsActive = true,
-                            LogoUrl = "https://purchase.daralshifa.com/images/logo.png",
-                            Name = "Dar Al Shifa Hospital",
-                            StoreCategoryId = 4,
-                            WebsiteUrl = "https://www.daralshifa.com"
-                        },
-                        new
-                        {
-                            StoreId = 8,
-                            Description = "A premium hospital specializing in various medical treatments.",
-                            IsActive = true,
-                            LogoUrl = "https://www.sharpersoftware.com/img/Customers/RHHLogo.jpg",
-                            Name = "Royale Hayat Hospital",
-                            StoreCategoryId = 4,
-                            WebsiteUrl = "https://www.royalehayat.com"
                         });
                 });
 

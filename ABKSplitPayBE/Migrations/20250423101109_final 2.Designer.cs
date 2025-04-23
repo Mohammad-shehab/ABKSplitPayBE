@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ABKSplitPayBE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250415055415_gfhjk")]
-    partial class gfhjk
+    [Migration("20250423101109_final 2")]
+    partial class final2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -443,6 +443,116 @@ namespace ABKSplitPayBE.Migrations
                     b.HasKey("PaymentPlanId");
 
                     b.ToTable("PaymentPlans");
+
+                    b.HasData(
+                        new
+                        {
+                            PaymentPlanId = 1,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "1 Month Plan",
+                            NumberOfInstallments = 1
+                        },
+                        new
+                        {
+                            PaymentPlanId = 2,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "2 Month Plan",
+                            NumberOfInstallments = 2
+                        },
+                        new
+                        {
+                            PaymentPlanId = 3,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "3 Month Plan",
+                            NumberOfInstallments = 3
+                        },
+                        new
+                        {
+                            PaymentPlanId = 4,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "4 Month Plan",
+                            NumberOfInstallments = 4
+                        },
+                        new
+                        {
+                            PaymentPlanId = 5,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "5 Month Plan",
+                            NumberOfInstallments = 5
+                        },
+                        new
+                        {
+                            PaymentPlanId = 6,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "6 Month Plan",
+                            NumberOfInstallments = 6
+                        },
+                        new
+                        {
+                            PaymentPlanId = 7,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "7 Month Plan",
+                            NumberOfInstallments = 7
+                        },
+                        new
+                        {
+                            PaymentPlanId = 8,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "8 Month Plan",
+                            NumberOfInstallments = 8
+                        },
+                        new
+                        {
+                            PaymentPlanId = 9,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "9 Month Plan",
+                            NumberOfInstallments = 9
+                        },
+                        new
+                        {
+                            PaymentPlanId = 10,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "10 Month Plan",
+                            NumberOfInstallments = 10
+                        },
+                        new
+                        {
+                            PaymentPlanId = 11,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "11 Month Plan",
+                            NumberOfInstallments = 11
+                        },
+                        new
+                        {
+                            PaymentPlanId = 12,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
+                            Name = "12 Month Plan",
+                            NumberOfInstallments = 12
+                        });
                 });
 
             modelBuilder.Entity("ABKSplitPayBE.Models.Product", b =>

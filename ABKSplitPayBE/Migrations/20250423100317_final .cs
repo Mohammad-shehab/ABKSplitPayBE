@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ABKSplitPayBE.Migrations
 {
     /// <inheritdoc />
-    public partial class dfghjk : Migration
+    public partial class final : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -519,6 +519,25 @@ namespace ABKSplitPayBE.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "PaymentPlans",
+                columns: new[] { "PaymentPlanId", "InterestRate", "IntervalDays", "IsActive", "Name", "NumberOfInstallments" },
+                values: new object[,]
+                {
+                    { 1, 0m, 30, true, "1 Month Plan", 1 },
+                    { 2, 0m, 30, true, "2 Month Plan", 2 },
+                    { 3, 0m, 30, true, "3 Month Plan", 3 },
+                    { 4, 0m, 30, true, "4 Month Plan", 4 },
+                    { 5, 0m, 30, true, "5 Month Plan", 5 },
+                    { 6, 0m, 30, true, "6 Month Plan", 6 },
+                    { 7, 0m, 30, true, "7 Month Plan", 7 },
+                    { 8, 0m, 30, true, "8 Month Plan", 8 },
+                    { 9, 0m, 30, true, "9 Month Plan", 9 },
+                    { 10, 0m, 30, true, "10 Month Plan", 10 },
+                    { 11, 0m, 30, true, "11 Month Plan", 11 },
+                    { 12, 0m, 30, true, "12 Month Plan", 12 }
+                });
+
+            migrationBuilder.InsertData(
                 table: "ProductCategories",
                 columns: new[] { "ProductCategoryId", "Description", "IsActive", "Name", "PictureUrl" },
                 values: new object[,]
@@ -548,26 +567,7 @@ namespace ABKSplitPayBE.Migrations
                     { 1, "A leading retailer for electronics and books in the Middle East.", true, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_EYfEMiV59HZO1JVMunmUd-XHOpbVrWI8DQ&s", "Jarir Bookstore", 1, "https://www.jarir.com" },
                     { 2, "Kuwait's largest electronics retailer.", true, "https://www.xcite.com/assets/icons/logo.jpg", "Xcite by Alghanim Electronics", 1, "https://www.xcite.com" },
                     { 3, "Affordable furniture and home decor solutions.", true, "https://static.dezeen.com/uploads/2019/04/ikea-logo-new-hero-1.jpg", "IKEA Kuwait", 2, "https://www.ikea.com/kw" },
-                    { 4, "Stylish furniture and home accessories.", true, "https://d1yjjnpx0p53s8.cloudfront.net/styles/large/s3/abyat_wing_logo_0.jpg?itok=Trhx2GSu", "Abyat", 2, "https://www.abyat.com/kw/ar" },
-                    { 5, "A premier international school in Kuwait.", true, "https://media.licdn.com/dms/image/v2/C561BAQE_m2Ujim4lyQ/company-background_10000/company-background_10000/0/1584559760344/american_international_school_kuwait_cover?e=2147483647&v=beta&t=zt2lRU5uJA-o2CHmJuVDqoWV8SIqa_W_F69eqQ3yRhs", "American International School", 3, "https://www.ais-kuwait.org" },
-                    { 6, "AUM Top university in Kuwait in QS & Times Higher Education Rankings", true, "https://www.aum.edu.kw/images/ShareLogo.jpg", "AUM", 3, "https://www.aum.edu.kw/" },
-                    { 7, "A leading hospital in Kuwait offering comprehensive medical services.", true, "https://purchase.daralshifa.com/images/logo.png", "Dar Al Shifa Hospital", 4, "https://www.daralshifa.com" },
-                    { 8, "A premium hospital specializing in various medical treatments.", true, "https://www.sharpersoftware.com/img/Customers/RHHLogo.jpg", "Royale Hayat Hospital", 4, "https://www.royalehayat.com" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Products",
-                columns: new[] { "ProductId", "Description", "IsActive", "Name", "PictureUrl", "Price", "ProductCategoryId", "StockQuantity", "StoreId" },
-                values: new object[,]
-                {
-                    { 1, "Latest Samsung smartphone with advanced features.", true, "Samsung Galaxy S23", "https://images.shopkees.com/uploads/cdn/images/1000/9995354760_1675408536.webp", 250.00m, 1, 50, 1 },
-                    { 2, "High-performance laptop for professionals.", true, "MacBook Pro", "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp-spacegray-select-202206?wid=904&hei=840&fmt=jpeg&qlt=90&.v=1664497359481", 1200.00m, 1, 30, 2 },
-                    { 3, "Annual tuition fee for American International School.", true, "AIS Tuition Fee", "https://media.licdn.com/dms/image/v2/C561BAQE_m2Ujim4lyQ/company-background_10000/company-background_10000/0/1584559760344/american_international_school_kuwait_cover?e=2147483647&v=beta&t=zt2lRU5uJA-o2CHmJuVDqoWV8SIqa_W_F69eqQ3yRhs", 5000.00m, 2, 0, 5 },
-                    { 4, "Annual tuition fee for American University of the Middle East.", true, "AUM Tuition Fee", "https://www.aum.edu.kw/images/ShareLogo.jpg", 50.00m, 2, 100, 6 },
-                    { 5, "MRI scan package.", true, "MRI", "https://www.capitalradiology.com.au/media/he1jvtno/mri-2000-x-1333-v2.png", 150.00m, 3, 0, 7 },
-                    { 6, "Professional dental cleaning service.", true, "Dental Cleaning", "https://west85thdental.com/wp-content/uploads/2022/01/woman-getting-a-dental-cleaning.jpg", 80.00m, 3, 0, 8 },
-                    { 7, "Modern 3-seater sofa set.", true, "Sofa Set", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9bK65Pig7XvG_6MJ9RcEXWfVijHKjTDmPzg&s", 400.00m, 4, 20, 3 },
-                    { 8, "Elegant 6-seater dining table.", true, "Dining Table", "https://m.media-amazon.com/images/I/51Yt8mJTKzL.jpg", 300.00m, 4, 15, 4 }
+                    { 4, "Stylish furniture and home accessories.", true, "https://d1yjjnpx0p53s8.cloudfront.net/styles/large/s3/abyat_wing_logo_0.jpg?itok=Trhx2GSu", "Abyat", 2, "https://www.abyat.com/kw/ar" }
                 });
 
             migrationBuilder.CreateIndex(

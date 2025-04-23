@@ -46,7 +46,25 @@ namespace ABKSplitPayBE.Data
                 .HasOne(i => i.PaymentMethod)
                 .WithMany(pm => pm.Installments)
                 .HasForeignKey(i => i.PaymentMethodId)
-                .OnDelete(DeleteBehavior.NoAction); 
+                .OnDelete(DeleteBehavior.NoAction);
+
+
+            // Seed Payment Plans
+            var paymentPlans = new List<PaymentPlan>();
+            for (int i = 1; i <= 12; i++)
+            {
+                paymentPlans.Add(new PaymentPlan
+                {
+                    PaymentPlanId = i,
+                    Name = $"{i} Month Plan",
+                    NumberOfInstallments = i,
+                    IntervalDays = 30,
+                    InterestRate = 0,
+                    IsActive = true
+                });
+            }
+            modelBuilder.Entity<PaymentPlan>().HasData(paymentPlans);
+
             modelBuilder.Entity<ProductCategory>().HasData(
                 new ProductCategory
                 {
