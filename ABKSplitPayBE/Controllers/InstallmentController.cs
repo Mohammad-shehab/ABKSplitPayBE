@@ -13,13 +13,10 @@ namespace ABKSplitPayBE.Controllers
     public class InstallmentController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-
         public InstallmentController(ApplicationDbContext context)
         {
             _context = context;
         }
-
-        // GET: api/Installment/order/{orderId}
         [HttpGet("order/{orderId}")]
         [Authorize]
         public async Task<IActionResult> GetInstallments(int orderId)
@@ -79,8 +76,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(response);
         }
-
-        // GET: api/Installment/{id}
         [HttpGet("{id}")]
         [Authorize]
         public async Task<IActionResult> GetInstallment(int id)
@@ -132,8 +127,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(installment);
         }
-
-        // POST: api/Installment
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateInstallment([FromBody] dynamic installmentDto)
@@ -142,8 +135,6 @@ namespace ABKSplitPayBE.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            // Validate required fields
             int orderId = installmentDto.OrderId;
             int installmentNumber = installmentDto.InstallmentNumber;
             decimal amount = installmentDto.Amount;
@@ -182,8 +173,6 @@ namespace ABKSplitPayBE.Controllers
 
             _context.Installments.Add(installment);
             await _context.SaveChangesAsync();
-
-            // Fetch the created installment for the response
             var createdInstallment = await _context.Installments
                 .Where(i => i.InstallmentId == installment.InstallmentId)
                 .Select(i => new
@@ -225,8 +214,6 @@ namespace ABKSplitPayBE.Controllers
 
             return CreatedAtAction(nameof(GetInstallment), new { id = installment.InstallmentId }, createdInstallment);
         }
-
-        // PUT: api/Installment/{id}
         [HttpPut("{id}")]
         [Authorize]
         public async Task<IActionResult> UpdateInstallment(int id)
@@ -240,8 +227,6 @@ namespace ABKSplitPayBE.Controllers
             {
                 return NotFound("Installment not found.");
             }
-
-            // Ensure the user can only update installments for their own orders
             if (installment.Order.UserId != userId)
             {
                 return Forbid("You are not authorized to update this installment.");
@@ -251,29 +236,22 @@ namespace ABKSplitPayBE.Controllers
             {
                 return BadRequest("Installment is already paid.");
             }
-
-            // Mark the installment as paid
             installment.IsPaid = true;
             installment.PaidDate = DateTime.UtcNow;
             installment.PaymentStatus = "Paid";
 
             _context.Entry(installment).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-
-            // Check if all installments for the order are paid
             var allInstallments = await _context.Installments
                 .Where(i => i.OrderId == installment.OrderId)
                 .ToListAsync();
 
             if (allInstallments.All(i => i.IsPaid))
             {
-                // Update the order status to "Paid"
                 installment.Order.Status = "Paid";
                 _context.Entry(installment.Order).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
-
-            // Fetch the updated installment for the response
             var updatedInstallment = await _context.Installments
                 .Where(i => i.InstallmentId == id)
                 .Select(i => new
@@ -315,8 +293,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(updatedInstallment);
         }
-
-        // PUT: api/Installment/order/{orderId}/pay
         [HttpPut("order/{orderId}/pay")]
         [Authorize]
         public async Task<IActionResult> PayInstallments(int orderId)
@@ -341,7 +317,7 @@ namespace ABKSplitPayBE.Controllers
 
             foreach (var installment in installments)
             {
-                if (!installment.IsPaid) // Only update unpaid installments
+                if (!installment.IsPaid) 
                 {
                     installment.IsPaid = true;
                     installment.PaidDate = DateTime.UtcNow;
@@ -349,8 +325,6 @@ namespace ABKSplitPayBE.Controllers
                     _context.Entry(installment).State = EntityState.Modified;
                 }
             }
-
-            // Update the order status to "Paid" if all installments are paid
             if (installments.All(i => i.IsPaid))
             {
                 order.Status = "Paid";
@@ -358,8 +332,6 @@ namespace ABKSplitPayBE.Controllers
             }
 
             await _context.SaveChangesAsync();
-
-            // Fetch the updated installments for the response
             var updatedInstallments = await _context.Installments
                 .Where(i => i.OrderId == orderId)
                 .Select(i => new
@@ -387,7 +359,6 @@ namespace ABKSplitPayBE.Controllers
                     } : null
                 })
                 .ToListAsync();
-
             var response = new
             {
                 Order = new
@@ -406,8 +377,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(response);
         }
-
-        // DELETE: api/Installment/{id}
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteInstallment(int id)

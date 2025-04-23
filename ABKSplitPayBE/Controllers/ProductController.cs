@@ -19,8 +19,6 @@ namespace ABKSplitPayBE.Controllers
         {
             _context = context;
         }
-
-        // DTO for creating/updating products
         public class ProductCreateUpdateDto
         {
             public string Name { get; set; }
@@ -32,8 +30,6 @@ namespace ABKSplitPayBE.Controllers
             public string PictureUrl { get; set; }
             public bool IsActive { get; set; }
         }
-
-        // DTO for API responses (GET)
         public class ProductResponseDto
         {
             public int ProductId { get; set; }
@@ -46,8 +42,6 @@ namespace ABKSplitPayBE.Controllers
             public string PictureUrl { get; set; }
             public bool IsActive { get; set; }
         }
-
-        // GET: api/Product
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductResponseDto>>> GetProducts()
         {
@@ -68,8 +62,6 @@ namespace ABKSplitPayBE.Controllers
                 .ToListAsync();
             return Ok(products);
         }
-
-        // GET: api/Product/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductResponseDto>> GetProduct(int id)
         {
@@ -96,17 +88,14 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(product);
         }
-
-        // POST: api/Product
         [HttpPost]
-        [Authorize(Roles = "Admin")] // Only admins can create products
+        [Authorize(Roles = "Admin")] 
         public async Task<ActionResult<ProductResponseDto>> CreateProduct(ProductCreateUpdateDto productDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
             var product = new Product
             {
                 Name = productDto.Name,
@@ -118,7 +107,6 @@ namespace ABKSplitPayBE.Controllers
                 PictureUrl = productDto.PictureUrl,
                 IsActive = productDto.IsActive
             };
-
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
@@ -137,10 +125,8 @@ namespace ABKSplitPayBE.Controllers
 
             return CreatedAtAction(nameof(GetProduct), new { id = product.ProductId }, createdProductDto);
         }
-
-        // PUT: api/Product/{id}
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")] // Only admins can update products
+        [Authorize(Roles = "Admin")] 
         public async Task<IActionResult> UpdateProduct(int id, ProductCreateUpdateDto productDto)
         {
             var product = await _context.Products.FindAsync(id);
@@ -148,7 +134,6 @@ namespace ABKSplitPayBE.Controllers
             {
                 return NotFound("Product not found.");
             }
-
             product.Name = productDto.Name ?? product.Name;
             product.Description = productDto.Description ?? product.Description;
             product.Price = productDto.Price != 0 ? productDto.Price : product.Price;
@@ -160,13 +145,10 @@ namespace ABKSplitPayBE.Controllers
 
             _context.Entry(product).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
-
-        // DELETE: api/Product/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")] // Only admins can delete products
+        [Authorize(Roles = "Admin")] 
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = await _context.Products.FindAsync(id);
@@ -174,10 +156,8 @@ namespace ABKSplitPayBE.Controllers
             {
                 return NotFound("Product not found.");
             }
-
-            product.IsActive = false; // Soft delete
+            product.IsActive = false; 
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
     }

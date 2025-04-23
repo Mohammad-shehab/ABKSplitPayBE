@@ -14,18 +14,14 @@ namespace ABKSplitPayBE.Controllers
     public class WishListController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-
         public WishListController(ApplicationDbContext context)
         {
             _context = context;
         }
-
         public class WishListDto
         {
             public int ProductId { get; set; }
         }
-
-        // GET: api/WishList
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<WishList>> GetWishList()
@@ -38,8 +34,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(wishList);
         }
-
-        // GET: api/WishList/{id}
         [HttpGet("{id}")]
         [Authorize]
         public async Task<ActionResult<WishList>> GetWishListItem(int id)
@@ -56,8 +50,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(wishListItem);
         }
-
-        // POST: api/WishList
         [HttpPost]
         [Authorize]
         public async Task<ActionResult<WishList>> CreateWishListItem(WishListDto wishListDto)
@@ -68,8 +60,6 @@ namespace ABKSplitPayBE.Controllers
             {
                 return BadRequest("Product not found or inactive.");
             }
-
-            // Check if the product is already in the wishlist
             var existingItem = await _context.Wishlists
                 .FirstOrDefaultAsync(w => w.UserId == userId && w.ProductId == wishListDto.ProductId);
             if (existingItem != null)
@@ -83,14 +73,11 @@ namespace ABKSplitPayBE.Controllers
                 ProductId = wishListDto.ProductId,
                 AddedDate = DateTime.UtcNow
             };
-
             _context.Wishlists.Add(wishListItem);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetWishListItem), new { id = wishListItem.WishListId }, wishListItem);
         }
-
-        // DELETE: api/WishList/{id}
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteWishListItem(int id)
@@ -98,15 +85,12 @@ namespace ABKSplitPayBE.Controllers
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             var wishListItem = await _context.Wishlists
                 .FirstOrDefaultAsync(w => w.WishListId == id && w.UserId == userId);
-
             if (wishListItem == null)
             {
                 return NotFound("Wishlist item not found.");
             }
-
             _context.Wishlists.Remove(wishListItem);
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
     }

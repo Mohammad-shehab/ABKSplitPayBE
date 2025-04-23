@@ -18,8 +18,6 @@ namespace ABKSplitPayBE.Controllers
         {
             _context = context;
         }
-
-        // GET: api/Address
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetAddresses()
@@ -44,8 +42,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(addresses);
         }
-
-        // GET: api/Address/{id}
         [HttpGet("{id}")]
         [Authorize]
         public async Task<IActionResult> GetAddress(int id)
@@ -75,8 +71,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(address);
         }
-
-        // POST: api/Address
         [HttpPost]
         [Authorize]
         public async Task<ActionResult<Address>> CreateAddress(AddressDto addressDto)
@@ -87,8 +81,6 @@ namespace ABKSplitPayBE.Controllers
             }
 
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-
-            // If this is set as default, unset any existing default
             if (addressDto.IsDefault)
             {
                 var existingDefault = await _context.Addresses
@@ -118,8 +110,6 @@ namespace ABKSplitPayBE.Controllers
 
             return CreatedAtAction(nameof(GetAddress), new { id = address.AddressId }, address);
         }
-
-        // PUT: api/Address/{id}
         [HttpPut("{id}")]
         [Authorize]
         public async Task<IActionResult> UpdateAddress(int id, AddressDto addressDto)
@@ -158,8 +148,6 @@ namespace ABKSplitPayBE.Controllers
 
             return NoContent();
         }
-
-        // DELETE: api/Address/{id}
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteAddress(int id)
@@ -172,8 +160,6 @@ namespace ABKSplitPayBE.Controllers
             {
                 return NotFound("Address not found.");
             }
-
-            // Check if the address is used by any orders
             var ordersUsingAddress = await _context.Orders
                 .Where(o => o.ShippingAddressId == id)
                 .ToListAsync();

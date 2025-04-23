@@ -14,12 +14,10 @@ namespace ABKSplitPayBE.Controllers
     public class OrderController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-
         public OrderController(ApplicationDbContext context)
         {
             _context = context;
         }
-
         public class OrderDto
         {
             public int PaymentPlanId { get; set; }
@@ -28,8 +26,6 @@ namespace ABKSplitPayBE.Controllers
             public string Notes { get; set; }
             public string ShippingMethod { get; set; }
         }
-
-        // GET: api/Order
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetOrders()
@@ -55,8 +51,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(orders);
         }
-
-        // GET: api/Order/{id}
         [HttpGet("{id}")]
         [Authorize]
         public async Task<IActionResult> GetOrder(int id)
@@ -87,8 +81,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(order);
         }
-
-        // GET: api/Order/points
         [HttpGet("points")]
         [Authorize]
         public async Task<IActionResult> GetPoints()
@@ -100,8 +92,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(new { points = paidOrdersTotal });
         }
-
-        // POST: api/Order
         [HttpPost]
         [Authorize]
         public async Task<ActionResult<Order>> CreateOrder(OrderDto orderDto)
@@ -133,8 +123,6 @@ namespace ABKSplitPayBE.Controllers
                     return BadRequest("Shipping address not found.");
                 }
             }
-
-            // Calculate total amount
             decimal totalAmount = cart.CartItems.Sum(ci => ci.Product.Price * ci.Quantity);
 
             var order = new Order
@@ -149,23 +137,17 @@ namespace ABKSplitPayBE.Controllers
                 Notes = orderDto.Notes,
                 ShippingMethod = orderDto.ShippingMethod
             };
-
-            // Create OrderItems
             order.OrderItems = cart.CartItems.Select(ci => new OrderItem
             {
                 ProductId = ci.ProductId,
                 Quantity = ci.Quantity,
                 UnitPrice = ci.Product.Price
             }).ToList();
-
-            // Get a valid PaymentMethodId (you can replace this with your logic to get the actual PaymentMethodId)
             var paymentMethod = await _context.PaymentMethods.FirstOrDefaultAsync(pm => pm.UserId == userId);
             if (paymentMethod == null)
             {
                 return BadRequest("No valid payment method found for the user.");
             }
-
-            // Create Installments
             decimal installmentAmount = totalAmount / paymentPlan.NumberOfInstallments;
             order.Installments = Enumerable.Range(1, paymentPlan.NumberOfInstallments)
                 .Select(i => new Installment
@@ -176,20 +158,16 @@ namespace ABKSplitPayBE.Controllers
                     Currency = order.Currency,
                     IsPaid = false,
                     PaymentStatus = "Pending",
-                    PaymentMethodId = paymentMethod.PaymentMethodId, // Set a valid PaymentMethodId
-                    TransactionId = Guid.NewGuid().ToString() // Provide a valid value
+                    PaymentMethodId = paymentMethod.PaymentMethodId, 
+                    TransactionId = Guid.NewGuid().ToString() 
                 }).ToList();
 
             _context.Orders.Add(order);
-
-            // Clear the cart
             _context.CartItems.RemoveRange(cart.CartItems);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetOrder), new { id = order.OrderId }, order);
         }
-
-        // PUT: api/Order/{id}
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateOrder(int id, OrderDto orderDto)
@@ -228,8 +206,6 @@ namespace ABKSplitPayBE.Controllers
 
             return NoContent();
         }
-
-        // DELETE: api/Order/{id}
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteOrder(int id)

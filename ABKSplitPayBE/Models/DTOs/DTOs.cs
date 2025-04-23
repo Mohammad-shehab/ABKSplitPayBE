@@ -14,7 +14,6 @@
         public ProductCategoryDto ProductCategory { get; set; }
         public StoreDto Store { get; set; }
     }
-
     public class ProductCategoryDto
     {
         public int ProductCategoryId { get; set; }
@@ -23,7 +22,6 @@
         public string PictureUrl { get; set; }
         public bool IsActive { get; set; }
     }
-
     public class StoreDto
     {
         public int StoreId { get; set; }
@@ -35,7 +33,6 @@
         public bool IsActive { get; set; }
         public StoreCategoryDto StoreCategory { get; set; }
     }
-
     public class StoreCategoryDto
     {
         public int StoreCategoryId { get; set; }

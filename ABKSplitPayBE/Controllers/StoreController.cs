@@ -15,13 +15,10 @@ namespace ABKSplitPayBE.Controllers
     public class StoreController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-
         public StoreController(ApplicationDbContext context)
         {
             _context = context;
         }
-
-        // GET: api/Store
         [HttpGet]
         public async Task<IActionResult> GetStores()
         {
@@ -40,17 +37,12 @@ namespace ABKSplitPayBE.Controllers
                     StoreCategory = new
                     {
                         s.StoreCategory.StoreCategoryId,
-                        s.StoreCategory.Name,
-                      
-                        // Exclude the "stores" list to avoid circular references
+                        s.StoreCategory.Name,                      
                     }
                 })
                 .ToListAsync();
-
             return Ok(stores);
         }
-
-        // GET: api/Store/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetStore(int id)
         {
@@ -76,26 +68,20 @@ namespace ABKSplitPayBE.Controllers
                     }
                 })
                 .FirstOrDefaultAsync();
-
             if (store == null)
             {
                 return NotFound("Store not found.");
             }
-
             return Ok(store);
         }
-
-        // POST: api/Store
         [HttpPost]
-        [Authorize(Roles = "Admin")] // Only admins can create stores
+        [Authorize(Roles = "Admin")] 
         public async Task<IActionResult> CreateStore([FromBody] dynamic storeDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            // Validate required fields
             string name = storeDto.Name;
             int storeCategoryId = storeDto.StoreCategoryId;
             bool isActive = storeDto.IsActive;
@@ -104,14 +90,11 @@ namespace ABKSplitPayBE.Controllers
             {
                 return BadRequest("Name and StoreCategoryId are required.");
             }
-
-            // Validate StoreCategoryId
             var storeCategory = await _context.StoreCategories.FindAsync(storeCategoryId);
             if (storeCategory == null)
             {
                 return BadRequest("Invalid StoreCategoryId.");
             }
-
             var store = new Store
             {
                 Name = name,
@@ -121,11 +104,8 @@ namespace ABKSplitPayBE.Controllers
                 LogoUrl = storeDto.LogoUrl,
                 IsActive = isActive
             };
-
             _context.Stores.Add(store);
             await _context.SaveChangesAsync();
-
-            // Fetch the created store with its category for the response
             var createdStore = await _context.Stores
                 .Include(s => s.StoreCategory)
                 .Where(s => s.StoreId == store.StoreId)
@@ -148,13 +128,10 @@ namespace ABKSplitPayBE.Controllers
                     }
                 })
                 .FirstOrDefaultAsync();
-
             return CreatedAtAction(nameof(GetStore), new { id = store.StoreId }, createdStore);
         }
-
-        // PUT: api/Store/{id}
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")] // Only admins can update stores
+        [Authorize(Roles = "Admin")] 
         public async Task<IActionResult> UpdateStore(int id, [FromBody] dynamic storeDto)
         {
             var store = await _context.Stores.FindAsync(id);
@@ -162,8 +139,6 @@ namespace ABKSplitPayBE.Controllers
             {
                 return NotFound("Store not found.");
             }
-
-            // Validate StoreCategoryId if provided
             int storeCategoryId = storeDto.StoreCategoryId;
             if (storeCategoryId != 0)
             {
@@ -174,7 +149,6 @@ namespace ABKSplitPayBE.Controllers
                 }
                 store.StoreCategoryId = storeCategoryId;
             }
-
             store.Name = storeDto.Name ?? store.Name;
             store.Description = storeDto.Description ?? store.Description;
             store.WebsiteUrl = storeDto.WebsiteUrl ?? store.WebsiteUrl;
@@ -186,10 +160,8 @@ namespace ABKSplitPayBE.Controllers
 
             return NoContent();
         }
-
-        // DELETE: api/Store/{id}
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")] // Only admins can delete stores
+        [Authorize(Roles = "Admin")] 
         public async Task<IActionResult> DeleteStore(int id)
         {
             var store = await _context.Stores.FindAsync(id);
@@ -197,10 +169,8 @@ namespace ABKSplitPayBE.Controllers
             {
                 return NotFound("Store not found.");
             }
-
-            store.IsActive = false; // Soft delete
+            store.IsActive = false; 
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
     }

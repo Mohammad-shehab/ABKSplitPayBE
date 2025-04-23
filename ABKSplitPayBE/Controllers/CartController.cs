@@ -14,13 +14,10 @@ namespace ABKSplitPayBE.Controllers
     public class CartController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-
         public CartController(ApplicationDbContext context)
         {
             _context = context;
         }
-
-        // GET: api/Cart
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<Cart>> GetCart()
@@ -38,8 +35,6 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(cart);
         }
-
-        // POST: api/Cart
         [HttpPost]
         [Authorize]
         public async Task<ActionResult<Cart>> CreateCart()
@@ -62,8 +57,6 @@ namespace ABKSplitPayBE.Controllers
 
             return CreatedAtAction(nameof(GetCart), cart);
         }
-
-        // DELETE: api/Cart
         [HttpDelete]
         [Authorize]
         public async Task<IActionResult> DeleteCart()
