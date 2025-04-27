@@ -266,7 +266,7 @@ namespace ABKSplitPayBE.Data
                     ProductId = 4,
                     Name = "AUM Tuition Fee",
                     Description = "Annual tuition fee for American University of the Middle East.",
-                    Price = 50.00m,
+                    Price = 1000.00m,
                     StockQuantity = 100,
                     ProductCategoryId = 2,
                     StoreId = 6, 
