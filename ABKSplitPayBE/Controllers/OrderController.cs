@@ -18,6 +18,7 @@ namespace ABKSplitPayBE.Controllers
         {
             _context = context;
         }
+
         public class OrderDto
         {
             public int PaymentPlanId { get; set; }
@@ -26,6 +27,25 @@ namespace ABKSplitPayBE.Controllers
             public string Notes { get; set; }
             public string ShippingMethod { get; set; }
         }
+
+        private async Task UpdateOrderStatusBasedOnInstallments(int orderId)
+        {
+            var order = await _context.Orders
+                .Include(o => o.Installments)
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+            if (order == null) return;
+
+            bool allInstallmentsPaid = order.Installments.All(i => i.IsPaid);
+            if (allInstallmentsPaid && order.Status != "Paid")
+            {
+                order.Status = "Paid";
+                order.UpdatedAt = DateTime.UtcNow;
+                _context.Entry(order).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
+        }
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetOrders()
@@ -51,6 +71,7 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(orders);
         }
+
         [HttpGet("{id}")]
         [Authorize]
         public async Task<IActionResult> GetOrder(int id)
@@ -81,6 +102,7 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(order);
         }
+
         [HttpGet("points")]
         [Authorize]
         public async Task<IActionResult> GetPoints()
@@ -92,6 +114,7 @@ namespace ABKSplitPayBE.Controllers
 
             return Ok(new { points = paidOrdersTotal });
         }
+
         [HttpPost]
         [Authorize]
         public async Task<ActionResult<Order>> CreateOrder(OrderDto orderDto)
@@ -123,6 +146,7 @@ namespace ABKSplitPayBE.Controllers
                     return BadRequest("Shipping address not found.");
                 }
             }
+
             decimal totalAmount = cart.CartItems.Sum(ci => ci.Product.Price * ci.Quantity);
 
             var order = new Order
@@ -132,23 +156,28 @@ namespace ABKSplitPayBE.Controllers
                 ShippingAddressId = orderDto.ShippingAddressId,
                 TotalAmount = totalAmount,
                 Currency = orderDto.Currency ?? "KWD",
-                Status = "Pending",
+                Status = paymentPlan.NumberOfInstallments == 1 ? "Paid" : "Pending", // Set to "Paid" for "Pay Now" plans
                 OrderDate = DateTime.UtcNow,
                 Notes = orderDto.Notes,
                 ShippingMethod = orderDto.ShippingMethod
             };
+
             order.OrderItems = cart.CartItems.Select(ci => new OrderItem
             {
                 ProductId = ci.ProductId,
                 Quantity = ci.Quantity,
                 UnitPrice = ci.Product.Price
             }).ToList();
+
             var paymentMethod = await _context.PaymentMethods.FirstOrDefaultAsync(pm => pm.UserId == userId);
             if (paymentMethod == null)
             {
                 return BadRequest("No valid payment method found for the user.");
             }
+
             decimal installmentAmount = totalAmount / paymentPlan.NumberOfInstallments;
+
+            // Create installments and mark the first one as paid
             order.Installments = Enumerable.Range(1, paymentPlan.NumberOfInstallments)
                 .Select(i => new Installment
                 {
@@ -156,18 +185,22 @@ namespace ABKSplitPayBE.Controllers
                     DueDate = DateTime.UtcNow.AddDays(i * paymentPlan.IntervalDays),
                     Amount = installmentAmount,
                     Currency = order.Currency,
-                    IsPaid = false,
-                    PaymentStatus = "Pending",
-                    PaymentMethodId = paymentMethod.PaymentMethodId, 
-                    TransactionId = Guid.NewGuid().ToString() 
+                    IsPaid = i == 1, 
+                    PaymentStatus = i == 1 ? "Paid" : "Pending", 
+                    PaidDate = i == 1 ? DateTime.UtcNow : null, 
+                    PaymentMethodId = paymentMethod.PaymentMethodId,
+                    TransactionId = Guid.NewGuid().ToString()
                 }).ToList();
 
             _context.Orders.Add(order);
             _context.CartItems.RemoveRange(cart.CartItems);
             await _context.SaveChangesAsync();
 
+            await UpdateOrderStatusBasedOnInstallments(order.OrderId);
+
             return CreatedAtAction(nameof(GetOrder), new { id = order.OrderId }, order);
         }
+
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateOrder(int id, OrderDto orderDto)
@@ -206,6 +239,7 @@ namespace ABKSplitPayBE.Controllers
 
             return NoContent();
         }
+
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteOrder(int id)

@@ -49,20 +49,37 @@ namespace ABKSplitPayBE.Data
                 .OnDelete(DeleteBehavior.NoAction);
 
 
-            // Seed Payment Plans
+
+
+
+
             var paymentPlans = new List<PaymentPlan>();
-            for (int i = 1; i <= 12; i++)
+
+            // Add the first payment plan as "Pay Full"
+            paymentPlans.Add(new PaymentPlan
+            {
+                PaymentPlanId = 1,
+                Name = "Pay Full",
+                NumberOfInstallments = 1,
+                IntervalDays = 0, // No interval for a single payment
+                InterestRate = 0,
+                IsActive = true
+            });
+
+            // Add the remaining payment plans
+            for (int i = 2; i <= 12; i++)
             {
                 paymentPlans.Add(new PaymentPlan
                 {
                     PaymentPlanId = i,
-                    Name = $"{i} Month Plan",
+                    Name = $"{i} Month",
                     NumberOfInstallments = i,
                     IntervalDays = 30,
                     InterestRate = 0,
                     IsActive = true
                 });
             }
+
             modelBuilder.Entity<PaymentPlan>().HasData(paymentPlans);
 
             modelBuilder.Entity<ProductCategory>().HasData(

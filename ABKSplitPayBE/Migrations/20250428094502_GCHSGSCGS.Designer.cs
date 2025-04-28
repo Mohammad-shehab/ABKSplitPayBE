@@ -4,6 +4,7 @@ using ABKSplitPayBE.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ABKSplitPayBE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250428094502_GCHSGSCGS")]
+    partial class GCHSGSCGS
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -457,12 +460,21 @@ namespace ABKSplitPayBE.Migrations
                             InterestRate = 0m,
                             IntervalDays = 30,
                             IsActive = true,
+                            Name = "1 Month",
+                            NumberOfInstallments = 1
+                        },
+                        new
+                        {
+                            PaymentPlanId = 3,
+                            InterestRate = 0m,
+                            IntervalDays = 30,
+                            IsActive = true,
                             Name = "2 Month",
                             NumberOfInstallments = 2
                         },
                         new
                         {
-                            PaymentPlanId = 3,
+                            PaymentPlanId = 4,
                             InterestRate = 0m,
                             IntervalDays = 30,
                             IsActive = true,
@@ -471,7 +483,7 @@ namespace ABKSplitPayBE.Migrations
                         },
                         new
                         {
-                            PaymentPlanId = 4,
+                            PaymentPlanId = 5,
                             InterestRate = 0m,
                             IntervalDays = 30,
                             IsActive = true,
@@ -480,7 +492,7 @@ namespace ABKSplitPayBE.Migrations
                         },
                         new
                         {
-                            PaymentPlanId = 5,
+                            PaymentPlanId = 6,
                             InterestRate = 0m,
                             IntervalDays = 30,
                             IsActive = true,
@@ -489,7 +501,7 @@ namespace ABKSplitPayBE.Migrations
                         },
                         new
                         {
-                            PaymentPlanId = 6,
+                            PaymentPlanId = 7,
                             InterestRate = 0m,
                             IntervalDays = 30,
                             IsActive = true,
@@ -498,7 +510,7 @@ namespace ABKSplitPayBE.Migrations
                         },
                         new
                         {
-                            PaymentPlanId = 7,
+                            PaymentPlanId = 8,
                             InterestRate = 0m,
                             IntervalDays = 30,
                             IsActive = true,
@@ -507,7 +519,7 @@ namespace ABKSplitPayBE.Migrations
                         },
                         new
                         {
-                            PaymentPlanId = 8,
+                            PaymentPlanId = 9,
                             InterestRate = 0m,
                             IntervalDays = 30,
                             IsActive = true,
@@ -516,7 +528,7 @@ namespace ABKSplitPayBE.Migrations
                         },
                         new
                         {
-                            PaymentPlanId = 9,
+                            PaymentPlanId = 10,
                             InterestRate = 0m,
                             IntervalDays = 30,
                             IsActive = true,
@@ -525,7 +537,7 @@ namespace ABKSplitPayBE.Migrations
                         },
                         new
                         {
-                            PaymentPlanId = 10,
+                            PaymentPlanId = 11,
                             InterestRate = 0m,
                             IntervalDays = 30,
                             IsActive = true,
@@ -534,21 +546,12 @@ namespace ABKSplitPayBE.Migrations
                         },
                         new
                         {
-                            PaymentPlanId = 11,
+                            PaymentPlanId = 12,
                             InterestRate = 0m,
                             IntervalDays = 30,
                             IsActive = true,
                             Name = "11 Month",
                             NumberOfInstallments = 11
-                        },
-                        new
-                        {
-                            PaymentPlanId = 12,
-                            InterestRate = 0m,
-                            IntervalDays = 30,
-                            IsActive = true,
-                            Name = "12 Month",
-                            NumberOfInstallments = 12
                         });
                 });
 
